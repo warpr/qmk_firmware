@@ -3,6 +3,7 @@
 #define _DVORAK 0
 #define _LOWER 1
 #define _RAISE 2
+#define CMD_TIMEOUT 750
 
 enum custom_keycodes {
   DVORAK = SAFE_RANGE,
@@ -12,6 +13,9 @@ enum custom_keycodes {
   WORD_R,  // emacs word right (ESC, F)
 };
 
+static bool cmd_held = false;
+static uint16_t cmd_timer = 0;
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   [_DVORAK] = LAYOUT(
@@ -20,9 +24,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
      KC_ESC,  KC_QUOT, KC_COMM, KC_DOT,  KC_P,    KC_Y,                               KC_F,    KC_G,    KC_C,    KC_R,    KC_L,    KC_BSPACE,
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-LCTL_T(KC_TAB), C_S_T(KC_A), KC_O, LALT_T(KC_E), LCMD_T(KC_U), KC_I,                  KC_D, RCMD_T(KC_H), RALT_T(KC_T), KC_N, RCS_T(KC_S), RCTL_T(KC_MINUS),
+     LCTL_T(KC_TAB), LCTL_T(KC_A), LSFT_T(KC_O), LALT_T(KC_E), LCMD_T(KC_U), KC_I,                  KC_D, RCMD_T(KC_H), RALT_T(KC_T), RSFT_T(KC_N), RCTL_T(KC_S), RCTL_T(KC_MINUS),
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-     KC_LSFT, KC_SCOLON, KC_Q,  KC_J,    KC_K,    KC_B,    KC_MPLY,          KC_NO,   KC_B,    KC_M,    KC_W,    KC_V,    KC_Z,    KC_RSFT,
+     KC_LSFT, KC_SCOLON, KC_Q,  KC_J,    KC_K,    KC_X,    KC_MPLY,          KC_NO,   KC_B,    KC_M,    KC_W,    KC_V,    KC_Z,    KC_RSFT,
   //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
                               SCMD(KC_R), LT(1, KC_SPC), LT(1, KC_SPC),       LT(2, KC_ENT), LT(2, KC_ENT), LCMD(A(KC_I))
                                 // └────────┴────────┴────────┘                 └────────┴────────┴────────┘
@@ -48,9 +52,9 @@ LCTL_T(KC_TAB), C_S_T(KC_A), KC_O, LALT_T(KC_E), LCMD_T(KC_U), KC_I,            
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
      KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,                               KC_7,    KC_8,    KC_9,    KC_0,    KC_LBRACKET, KC_RBRACKET,
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-     _______, _______, _______, _______, _______, _______,                            _______, RCMD_T(KC_SLASH), RALT_T(KC_EQL), KC_BSLASH, RCS_T(KC_GRAVE), _______,
+     _______, _______, _______, _______, _______, _______,                            _______, RCMD_T(KC_SLASH), RALT_T(KC_EQL), RSFT_T(KC_BSLASH), RCTL_T(KC_GRAVE), _______,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-     _______, _______, _______, _______, _______, _______, _______,          _______, _______, KC_QUES, KC_PLUS, KC_PIPE, KC_TILDE, _______,
+     _______, _______, _______, _______, _______, _______, RESET,            RESET, _______, KC_QUES, KC_PLUS, KC_PIPE, KC_TILDE, _______,
   //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
                                     _______, _______, _______,                   _______, _______, _______
                                 // └────────┴────────┴────────┘                 └────────┴────────┴────────┘
@@ -107,11 +111,26 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
         }
     }
     else if (index == 1) {
+        if (!cmd_held) {
+            cmd_held = true;
+            register_code(KC_LGUI);
+        }
+
+        cmd_timer = timer_read();
+
         if (clockwise) {
-            tap_code(KC_MS_WH_DOWN);
+            tap_code16(KC_TAB);
         } else {
-            tap_code(KC_MS_WH_UP);
+            tap_code16(S(KC_TAB));
         }
     }
     return true;
+}
+
+void matrix_scan_user(void) {
+    if (cmd_held && timer_elapsed(cmd_timer) >= CMD_TIMEOUT) {
+        unregister_code(KC_LGUI);
+        cmd_held = false;
+        cmd_timer = 0;
+    }
 }
