@@ -2,19 +2,17 @@
 
 #define _DVORAK 0
 #define _LOWER 1
-#define _RAISE 2
-#define CMD_TIMEOUT 750
+
+#define KUNO_REFRESH    SCMD(KC_R)
+#define KUNO_DEVTOOLS   LCMD(A(KC_I))
+#define KUNO_EMOJI      LCTL(LCMD(KC_SPC))
 
 enum custom_keycodes {
   DVORAK = SAFE_RANGE,
   LOWER,
-  RAISE,
   WORD_L,  // emacs word left (ESC, B)
   WORD_R,  // emacs word right (ESC, F)
 };
-
-static bool cmd_held = false;
-static uint16_t cmd_timer = 0;
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
@@ -24,37 +22,23 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
      KC_ESC,  KC_QUOT, KC_COMM, KC_DOT,  KC_P,    KC_Y,                               KC_F,    KC_G,    KC_C,    KC_R,    KC_L,    KC_BSPACE,
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-     LCTL_T(KC_TAB), LCTL_T(KC_A), LSFT_T(KC_O), LALT_T(KC_E), LCMD_T(KC_U), KC_I,                  KC_D, RCMD_T(KC_H), RALT_T(KC_T), RSFT_T(KC_N), RCTL_T(KC_S), RCTL_T(KC_MINUS),
+     KC_LCTL, KC_A,    KC_O,    KC_E,    KC_U,    KC_I,                               KC_D,    KC_H,    KC_T,    KC_N,    KC_S,    KC_MINUS,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-     KC_LSFT, KC_SCOLON, KC_Q,  KC_J,    KC_K,    KC_X,    KC_MPLY,          KC_NO,   KC_B,    KC_M,    KC_W,    KC_V,    KC_Z,    KC_RSFT,
+     KC_LSFT, KC_SCOLON, KC_Q,  KC_J,    KC_K,    KC_X,    KC_MPLY,       KUNO_EMOJI, KC_B,    KC_M,    KC_W,    KC_V,    KC_Z,    KC_RSFT,
   //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
-                              SCMD(KC_R), LT(1, KC_SPC), LT(1, KC_SPC),       LT(2, KC_ENT), LT(2, KC_ENT), LCMD(A(KC_I))
+                                 KC_LOPT, KC_LCMD, LT(_LOWER, KC_SPC),       LT(_LOWER, KC_ENT), KC_RCMD, KC_ROPT
                                 // └────────┴────────┴────────┘                 └────────┴────────┴────────┘
   ),
 
   [_LOWER] = LAYOUT(
   //┌────────┬────────┬────────┬────────┬────────┬────────┐                          ┌────────┬────────┬────────┬────────┬────────┬────────┐
-     RESET  , DEBUG,   _______, _______, _______, _______,                            _______, _______, _______, _______, DEBUG,   RESET,
+      RESET,  DEBUG,   _______, _______, _______, KUNO_REFRESH,                 KUNO_DEVTOOLS, _______, _______, _______, DEBUG,   RESET,
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-     _______, _______, _______, KC_END,  KC_HOME, _______,                            _______, LALT(KC_LEFT), LALT(KC_RIGHT), _______, _______, _______,
+      KC_TAB,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                              KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    _______,
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-     _______, _______, _______, KC_DOWN, KC_UP,   _______,                            _______, KC_LEFT, KC_RIGHT, _______, _______, _______,
+     _______, KC_LEFT, KC_DOWN, KC_UP,   KC_RIGHT, _______,                           _______, KC_SLASH, KC_EQL, KC_BSLS, KC_MINUS, KC_RCTL,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-     _______, _______, _______, KC_PGDN, KC_PGUP, _______, _______,          _______, _______, WORD_L,  WORD_R,  _______, _______, _______,
-  //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
-                                    _______, _______, _______,                   _______, _______, _______
-                                // └────────┴────────┴────────┘                 └────────┴────────┴────────┘
-  ),
-
-  [_RAISE] = LAYOUT(
-  //┌────────┬────────┬────────┬────────┬────────┬────────┐                          ┌────────┬────────┬────────┬────────┬────────┬────────┐
-     KC_EXLM, KC_AT,   KC_HASH, KC_DOLLAR, KC_PERCENT, KC_CIRC,                       KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, KC_LCBR, KC_RCBR,
-  //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-     KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,                               KC_7,    KC_8,    KC_9,    KC_0,    KC_LBRACKET, KC_RBRACKET,
-  //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-     _______, _______, _______, _______, _______, _______,                            _______, RCMD_T(KC_SLASH), RALT_T(KC_EQL), RSFT_T(KC_BSLASH), RCTL_T(KC_GRAVE), _______,
-  //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-     _______, _______, _______, _______, _______, _______, RESET,            RESET, _______, KC_QUES, KC_PLUS, KC_PIPE, KC_TILDE, _______,
+     _______, WORD_L,  KC_PGDN, KC_PGUP, WORD_R,  _______, _______,          _______, _______, KC_LBRC, KC_PLUS, KC_RBRC, KC_GRAVE, _______,
   //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
                                     _______, _______, _______,                   _______, _______, _______
                                 // └────────┴────────┴────────┘                 └────────┴────────┴────────┘
@@ -75,14 +59,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         layer_on(_LOWER);
       } else {
         layer_off(_LOWER);
-      }
-      return false;
-      break;
-    case RAISE:
-      if (record->event.pressed) {
-        layer_on(_RAISE);
-      } else {
-        layer_off(_RAISE);
       }
       return false;
       break;
@@ -109,28 +85,31 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
         } else {
             tap_code(KC_VOLD);
         }
-    }
-    else if (index == 1) {
-        if (!cmd_held) {
-            cmd_held = true;
-            register_code(KC_LGUI);
-        }
-
-        cmd_timer = timer_read();
-
-        if (clockwise) {
-            tap_code16(KC_TAB);
+    } else {
+        if (IS_LAYER_ON(_LOWER)) {
+            if (clockwise) {
+                backlight_increase();
+            } else {
+                backlight_decrease();
+            }
         } else {
-            tap_code16(S(KC_TAB));
+            if (clockwise) {
+                tap_code16(KC_MS_WH_UP);
+            } else {
+                tap_code16(KC_MS_WH_DOWN);
+            }
         }
     }
+
     return true;
 }
 
-void matrix_scan_user(void) {
-    if (cmd_held && timer_elapsed(cmd_timer) >= CMD_TIMEOUT) {
-        unregister_code(KC_LGUI);
-        cmd_held = false;
-        cmd_timer = 0;
-    }
+void keyboard_post_init_keymap(void) {
+#if BACKLIGHT_ENABLE
+    backlight_enable();
+    backlight_level(5);
+#    ifdef BACKLIGHT_BREATHING
+    breathing_enable();
+#    endif
+#endif
 }
