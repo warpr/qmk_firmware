@@ -1,8 +1,8 @@
 #include QMK_KEYBOARD_H
+#include "print.h"
 
 #define _DVORAK 0
-#define _NAV 1
-#define _NUM 2
+#define _NUM 1
 // #define _SYSTEM 3
 
 #define KUNO_REFRESH    SCMD(KC_R)
@@ -11,11 +11,16 @@
 
 enum custom_keycodes {
   DVORAK = SAFE_RANGE,
-  NAV,
   NUM,
   WORD_L,  // emacs word left (ESC, B)
   WORD_R,  // emacs word right (ESC, F)
 };
+
+static bool emacs_backspace_held = false;
+static bool emacs_down_held = false;
+static bool emacs_left_held = false;
+static bool emacs_right_held = false;
+static bool emacs_up_held = false;
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
@@ -25,7 +30,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
      KC_TAB,  KC_QUOT, KC_COMM, KC_DOT,  KC_P,    KC_Y,                               KC_F,    KC_G,    KC_C,    KC_R,    KC_L,    KC_ESC,
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-     MO(_NAV), KC_A,   KC_O,    KC_E,    KC_U,    KC_I,                               KC_D,    KC_H,    KC_T,    KC_N,    KC_S,    KC_MINUS,
+     KC_LCTRL, KC_A,   KC_O,    KC_E,    KC_U,    KC_I,                               KC_D,    KC_H,    KC_T,    KC_N,    KC_S,    KC_MINUS,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
      KC_LSFT, KC_SCOLON, KC_Q,  KC_J,    KC_K,    KC_X,    KC_MPLY,       KUNO_EMOJI, KC_B,    KC_M,    KC_W,    KC_V,    KC_Z,    KC_RSFT,
   //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
@@ -33,29 +38,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                 // └────────┴────────┴────────┘                 └────────┴────────┴────────┘
   ),
 
-  [_NAV] = LAYOUT(
-  //┌────────┬────────┬────────┬────────┬────────┬────────┐                          ┌────────┬────────┬────────┬────────┬────────┬────────┐
-     _______, _______, _______, _______, _______, _______,                            _______, _______, _______, _______, _______, _______,
-  //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-     C(KC_TAB), C(KC_QUOT), C(KC_COMM), C(KC_DOT), KC_UP, C(KC_Y),                    KC_RIGHT, C(KC_G), C(KC_C), C(KC_R), C(KC_L), _______,
-  //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-     _______, C(KC_A),  C(KC_O), C(KC_E), C(KC_U), C(KC_I),                           C(KC_D), KC_BSPACE, C(KC_T), KC_DOWN, C(KC_S), C(KC_MINUS),
-  //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-     _______, C(KC_SCOLON), C(KC_Q), C(KC_J), C(KC_K), C(KC_X), _______,     _______, KC_LEFT, C(KC_M), C(KC_W), C(KC_V), C(KC_Z), _______,
-  //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
-                                    _______, _______, C(KC_SPC),                 C(KC_ENT), _______, _______
-                                // └────────┴────────┴────────┘                 └────────┴────────┴────────┘
-  ),
-
   [_NUM] = LAYOUT(
   //┌────────┬────────┬────────┬────────┬────────┬────────┐                          ┌────────┬────────┬────────┬────────┬────────┬────────┐
-      RESET,  DEBUG,   _______, _______, _______, KUNO_REFRESH,                 KUNO_DEVTOOLS, _______, _______, _______, DEBUG,   RESET,
+     RESET,  DEBUG,   _______, _______, _______, KUNO_REFRESH,                 KUNO_DEVTOOLS, _______, _______, _______, DEBUG,   RESET,
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-      KC_GRAVE, KC_HOME, KC_SLASH, KC_EQL, KC_BSLS, _______,                          _______, KC_7,    KC_8,    KC_9,    KC_0,    _______,
+     KC_GRAVE, KC_HOME, KC_SLASH, KC_EQL, KC_BSLS, _______,                          _______, KC_7,    KC_8,    KC_9,    KC_0,    _______,
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-      KC_LCTL, WORD_L,  WORD_R, KC_LBRC, KC_RBRC, KC_PGUP,                            _______, KC_4,    KC_5,    KC_6,    KC_0,    KC_RCTL,
+     KC_LCTL, WORD_L,  WORD_R, KC_LBRC, KC_RBRC, KC_PGUP,                            _______, KC_4,    KC_5,    KC_6,    KC_0,    KC_RCTL,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-      _______, KC_END, _______, S(KC_9), S(KC_0), KC_PGDN, _______,          _______, _______, KC_1,    KC_2,    KC_3,    KC_0,    _______,
+     _______, KC_END, _______, S(KC_9), S(KC_0), KC_PGDN, _______,          _______, _______, KC_1,    KC_2,    KC_3,    KC_0,    _______,
   //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
                                     _______, _______, _______,                   _______, _______, _______
                                 // └────────┴────────┴────────┘                 └────────┴────────┴────────┘
@@ -78,43 +69,128 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-  switch (keycode) {
+    switch (keycode) {
     case DVORAK:
-      if (record->event.pressed) {
-        set_single_persistent_default_layer(_DVORAK);
-      }
-      return false;
-      break;
+        if (record->event.pressed) {
+            set_single_persistent_default_layer(_DVORAK);
+        }
+        return false;
+        break;
     case NUM:
-      if (record->event.pressed) {
-        layer_on(_NUM);
-      } else {
-        layer_off(_NUM);
-      }
-      return false;
-      break;
-    case NAV:
-      if (record->event.pressed) {
-        layer_on(_NAV);
-      } else {
-        layer_off(_NAV);
-      }
-      return false;
-      break;
-  case WORD_L:
-      // Emacs word left (ESC, B)
-      if (record->event.pressed) {
-          SEND_STRING(SS_TAP(X_ESC)"b");
-      }
-      break;
-  case WORD_R:
-      // Emacs word right (ESC, F)
-      if (record->event.pressed) {
-          SEND_STRING(SS_TAP(X_ESC)"f");
-      }
-      break;
-  }
-  return true;
+        if (record->event.pressed) {
+            layer_on(_NUM);
+        } else {
+            layer_off(_NUM);
+        }
+        return false;
+        break;
+    case WORD_L:
+        // Emacs word left (ESC, B)
+        if (record->event.pressed) {
+            SEND_STRING(SS_TAP(X_ESC)"b");
+        }
+        break;
+    case WORD_R:
+        // Emacs word right (ESC, F)
+        if (record->event.pressed) {
+            SEND_STRING(SS_TAP(X_ESC)"f");
+        }
+        break;
+    case KC_P:
+        if (record->event.pressed) {
+            // if CTRL+P is pressed, send up arrow instead
+            // NOTE: just CTRL, so e.g. CTRL+ALT doesn't count
+            // NOTE: Left CTRL only, so Right CTRL sends plain CTRL+P
+            if (get_mods() == MOD_BIT(KC_LCTRL)) {
+                del_mods(MOD_BIT(KC_LCTRL));
+                register_code(KC_UP);
+                emacs_up_held = true;
+                set_mods(MOD_BIT(KC_LCTRL));
+                return false;
+            }
+        } else {
+            if (emacs_up_held) {
+                unregister_code(KC_UP);
+                emacs_up_held = false;
+                return false;
+            }
+        }
+        break;
+
+    case KC_N:
+        if (record->event.pressed) {
+            if (get_mods() == MOD_BIT(KC_LCTRL)) {
+                del_mods(MOD_BIT(KC_LCTRL));
+                register_code(KC_DOWN);
+                emacs_down_held = true;
+                set_mods(MOD_BIT(KC_LCTRL));
+                return false;
+            }
+        } else {
+            if (emacs_down_held) {
+                unregister_code(KC_DOWN);
+                emacs_down_held = false;
+                return false;
+            }
+        }
+        break;
+
+    case KC_B:
+        if (record->event.pressed) {
+            if (get_mods() == MOD_BIT(KC_LCTRL)) {
+                del_mods(MOD_BIT(KC_LCTRL));
+                register_code(KC_LEFT);
+                emacs_left_held = true;
+                set_mods(MOD_BIT(KC_LCTRL));
+                return false;
+            }
+        } else {
+            if (emacs_left_held) {
+                unregister_code(KC_LEFT);
+                emacs_left_held = false;
+                return false;
+            }
+        }
+        break;
+
+    case KC_F:
+        if (record->event.pressed) {
+            if (get_mods() == MOD_BIT(KC_LCTRL)) {
+                del_mods(MOD_BIT(KC_LCTRL));
+                register_code(KC_RIGHT);
+                emacs_right_held = true;
+                set_mods(MOD_BIT(KC_LCTRL));
+                return false;
+            }
+        } else {
+            if (emacs_right_held) {
+                unregister_code(KC_RIGHT);
+                emacs_right_held = false;
+                return false;
+            }
+        }
+        break;
+
+    case KC_H:
+        if (record->event.pressed) {
+            if (get_mods() == MOD_BIT(KC_LCTRL)) {
+                del_mods(MOD_BIT(KC_LCTRL));
+                register_code(KC_BSPACE);
+                emacs_backspace_held = true;
+                set_mods(MOD_BIT(KC_LCTRL));
+                return false;
+            }
+        } else {
+            if (emacs_backspace_held) {
+                unregister_code(KC_BSPACE);
+                emacs_backspace_held = false;
+                return false;
+            }
+        }
+        break;
+    }
+
+    return true;
 }
 
 bool encoder_update_user(uint8_t index, bool clockwise) {
@@ -125,7 +201,7 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
             tap_code(KC_VOLD);
         }
     } else {
-        if (IS_LAYER_ON(_NAV)) {
+        if (IS_LAYER_ON(_NUM)) {
             if (clockwise) {
                 tap_code16(KC_MS_WH_UP);
             } else {
@@ -147,8 +223,5 @@ void keyboard_post_init_keymap(void) {
 #if BACKLIGHT_ENABLE
     backlight_enable();
     backlight_level(5);
-#    ifdef BACKLIGHT_BREATHING
-    breathing_enable();
-#    endif
 #endif
 }
