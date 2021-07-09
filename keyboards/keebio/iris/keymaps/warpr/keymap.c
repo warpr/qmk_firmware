@@ -3,7 +3,8 @@
 
 #define _DVORAK 0
 #define _NUM 1
-#define _MODS 2
+#define _LMODS 2
+#define _RMODS 3
 // #define _SYSTEM 3
 
 #define KUNO_REFRESH    SCMD(KC_R)
@@ -11,26 +12,29 @@
 #define KUNO_EMOJI      LCTL(LCMD(KC_SPC))
 
 enum custom_keycodes {
-  WARP_MODS_MIN = (SAFE_RANGE | 0x0f) + 1,
-  WARP_MODS_MAX = WARP_MODS_MIN + 0x10,
+  WARP_LEFT_MODS_MIN = (SAFE_RANGE | 0x0f) + 1,
+  WARP_LEFT_MODS_MAX = WARP_LEFT_MODS_MIN + 0x10,
+  WARP_RIGHT_MODS_MIN,
+  WARP_RIGHT_MODS_MAX = WARP_RIGHT_MODS_MIN + 0x10,
   WORD_L,  // emacs word left (ESC, B)
   WORD_R,  // emacs word right (ESC, F)
 };
 
 /*
 
-WARP_MOD(layer)
+WARP_LEFT_MOD(layer)
 - When pressed, switches to specified layer (which should have only
   the four modifiers for a single hand)
 - As soon as a modifier is pressed, that modifier is registered.
 - When the modifier is physically released, the modifier remains held.
 - If any further modifiers are pressed, they also remain held.
 - If a non-modifier key is pressed, the modifier layer is turned off.
-- Modifiers remain held until the WARP_MOD() key is released.
+- Modifiers remain held until the WARP_LEFT_MOD() key is released.
 
 */
 
-#define WARP_MOD(layer) (WARP_MODS_MIN | ((layer)&0x0F))
+#define WARP_L(layer) (WARP_LEFT_MODS_MIN | ((layer)&0x0F))
+#define WARP_R(layer) (WARP_RIGHT_MODS_MIN | ((layer)&0x0F))
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
@@ -38,37 +42,51 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //┌────────┬────────┬────────┬────────┬────────┬────────┐                          ┌────────┬────────┬────────┬────────┬────────┬────────┐
      _______, _______, _______, _______, _______, _______,                            _______, _______, _______, _______, _______, _______,
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-     KC_TAB,  KC_QUOT, KC_COMM, KC_DOT,  KC_P,    KC_Y,                               KC_F,    KC_G,    KC_C,    KC_R,    KC_L,    KC_ESC,
+     KC_GRAVE, KC_QUOT, KC_COMM, KC_DOT, KC_P,    KC_Y,                               KC_F,    KC_G,    KC_C,    KC_R,    KC_L,    KC_ESC,
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-     KC_LCTRL, KC_A,   KC_O,    KC_E,    KC_U,    KC_I,                               KC_D,    KC_H,    KC_T,    KC_N,    KC_S,    KC_MINUS,
+     KC_TAB,  KC_A,    KC_O,    KC_E,    KC_U,    KC_I,                               KC_D,    KC_H,    KC_T,    KC_N,    KC_S,    KC_MINUS,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-     KC_LSFT, KC_SCOLON, KC_Q,  KC_J,    KC_K,    KC_X,    KC_MPLY,       KUNO_EMOJI, KC_B,    KC_M,    KC_W,    KC_V,    KC_Z,    KC_RSFT,
+     KC_SPC,  KC_SCOLON, KC_Q,  KC_J,    KC_K,    KC_X,    KC_MPLY,       KUNO_EMOJI, KC_B,    KC_M,    KC_W,    KC_V,    KC_Z,    KC_ENT,
   //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
-                           KC_LOPT, WARP_MOD(_MODS), LT(_NUM, KC_SPC),       LT(_NUM, KC_ENT), KC_RCMD, KC_ROPT
+                               _______, WARP_L(_LMODS), MO(_NUM),            MO(_NUM), WARP_R(_RMODS), _______
                                 // └────────┴────────┴────────┘                 └────────┴────────┴────────┘
   ),
 
   [_NUM] = LAYOUT(
   //┌────────┬────────┬────────┬────────┬────────┬────────┐                          ┌────────┬────────┬────────┬────────┬────────┬────────┐
-     RESET,  DEBUG,   _______, _______, _______, KUNO_REFRESH,                 KUNO_DEVTOOLS, _______, _______, _______, DEBUG,   RESET,
+     RESET,  DEBUG,    _______, _______, _______, KUNO_REFRESH,                 KUNO_DEVTOOLS, _______, _______, _______, DEBUG,   RESET,
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-     KC_GRAVE, KC_HOME, KC_SLASH, KC_EQL, KC_BSLS, _______,                          _______, KC_7,    KC_8,    KC_9,    KC_0,    _______,
+     _______, KC_HOME, KC_SLASH, KC_EQL, KC_BSLS, _______,                            _______, KC_7,    KC_8,    KC_9,    KC_0,    _______,
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-     KC_LCTL, WORD_L,  WORD_R, KC_LBRC, KC_RBRC, KC_PGUP,                            _______, KC_4,    KC_5,    KC_6,    KC_0,    KC_RCTL,
+     _______, WORD_L,  WORD_R,  KC_LBRC, KC_RBRC, KC_PGUP,                            _______, KC_4,    KC_5,    KC_6,    KC_0,    _______,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-     _______, KC_END, _______, S(KC_9), S(KC_0), KC_PGDN, _______,          _______, _______, KC_1,    KC_2,    KC_3,    KC_0,    _______,
+     _______, KC_END,  _______, S(KC_9), S(KC_0), KC_PGDN, _______,          _______, _______, KC_1,    KC_2,    KC_3,    KC_0,    _______,
   //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
                                     _______, _______, _______,                   _______, _______, _______
                                 // └────────┴────────┴────────┘                 └────────┴────────┴────────┘
   ),
 
-  [_MODS] = LAYOUT(
+  [_LMODS] = LAYOUT(
   //┌────────┬────────┬────────┬────────┬────────┬────────┐                          ┌────────┬────────┬────────┬────────┬────────┬────────┐
      _______, _______, _______, _______, _______, _______,                            _______, _______, _______, _______, _______, _______,
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
      _______, _______, _______, _______, _______, _______,                            _______, _______, _______, _______, _______, _______,
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-     _______, KC_LCTRL, KC_LSFT, KC_LOPT, KC_LCMD, _______,                           _______, KC_RCMD, KC_ROPT, KC_RSFT, KC_RCTRL, _______,
+     _______, KC_LCTRL, KC_LSFT, KC_LOPT, KC_LCMD, _______,                           _______, _______, _______, _______, _______, _______,
+  //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
+     _______, _______, _______, _______, _______, _______, _______,          _______, _______, _______, _______, _______, _______, _______,
+  //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
+                                    _______, _______, _______,                   _______, _______, _______
+                                // └────────┴────────┴────────┘                 └────────┴────────┴────────┘
+  ),
+
+  [_RMODS] = LAYOUT(
+  //┌────────┬────────┬────────┬────────┬────────┬────────┐                          ┌────────┬────────┬────────┬────────┬────────┬────────┐
+     _______, _______, _______, _______, _______, _______,                            _______, _______, _______, _______, _______, _______,
+  //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
+     _______, _______, _______, _______, _______, _______,                            _______, _______, _______, _______, _______, _______,
+  //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
+     _______, _______, _______, _______, _______, _______,                            _______, KC_RCMD, KC_ROPT, KC_RSFT, KC_RCTRL, _______,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
      _______, _______, _______, _______, _______, _______, _______,          _______, _______, _______, _______, _______, _______, _______,
   //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
@@ -216,6 +234,8 @@ bool process_emacs_nav(uint16_t keycode, keyrecord_t *record) {
 
 static uint8_t warp_left_layer_held = 0;
 static uint8_t warp_left_mods_held = 0;
+static uint8_t warp_right_layer_held = 0;
+static uint8_t warp_right_mods_held = 0;
 
 void debug_warp_mods(uint16_t keycode, keyrecord_t *record) {
     uprintf(
@@ -234,7 +254,7 @@ bool process_warp_mods(uint16_t keycode, keyrecord_t *record) {
             if (warp_left_layer_held) {
                 warp_left_mods_held = warp_left_mods_held | MOD_BIT(keycode);
 
-                uprintf("MOD ACTIVATED: 0x%04X, current mods: 0x%04X\n", MOD_BIT(keycode), warp_left_mods_held);
+                uprintf("LEFT MOD ACTIVATED: 0x%04X, current mods: 0x%04X\n", MOD_BIT(keycode), warp_left_mods_held);
             }
         } else {
             if (warp_left_layer_held) {
@@ -243,12 +263,26 @@ bool process_warp_mods(uint16_t keycode, keyrecord_t *record) {
             }
         }
         break;
-    case WARP_MODS_MIN ... WARP_MODS_MAX:
+    case KC_RCTRL ... KC_RGUI:
+        if (record->event.pressed) {
+            if (warp_right_layer_held) {
+                warp_right_mods_held = warp_right_mods_held | MOD_BIT(keycode);
+
+                uprintf("RIGHT MOD ACTIVATED: 0x%04X, current mods: 0x%04X\n", MOD_BIT(keycode), warp_right_mods_held);
+            }
+        } else {
+            if (warp_right_layer_held) {
+                // don't unregister this key press
+                return false;
+            }
+        }
+        break;
+    case WARP_LEFT_MODS_MIN ... WARP_LEFT_MODS_MAX:
         if (record->event.pressed) {
             uint8_t layer = keycode & 0x0F;
             layer_on(layer);
             warp_left_layer_held = layer;
-            uprintf("WARP MOD LAYER ENGAGED!\n");
+            uprintf("WARP LEFT MOD LAYER ENGAGED!\n");
             return false;
         } else {
             if (warp_left_layer_held) {
@@ -260,13 +294,40 @@ bool process_warp_mods(uint16_t keycode, keyrecord_t *record) {
             clear_mods();
             for (uint8_t i = 0; i < 8; i++) {
                 if (warp_left_mods_held & MOD_BIT(KC_LCTRL + i)) {
-                    uprintf("need to unregister %04X\n", KC_LCTRL + i);
+                    uprintf("[LEFT] need to unregister %04X\n", KC_LCTRL + i);
                     unregister_code(KC_LCTRL + i);
                 }
             }
 
             warp_left_mods_held = 0;
-            uprintf("WARP MODS CLEARED!\n");
+            uprintf("WARP LEFT MODS CLEARED!\n");
+            return false;
+        }
+        break;
+    case WARP_RIGHT_MODS_MIN ... WARP_RIGHT_MODS_MAX:
+        if (record->event.pressed) {
+            uint8_t layer = keycode & 0x0F;
+            layer_on(layer);
+            warp_right_layer_held = layer;
+            uprintf("WARP RIGHT MOD LAYER ENGAGED!\n");
+            return false;
+        } else {
+            if (warp_right_layer_held) {
+                layer_off(warp_right_layer_held);
+                warp_right_layer_held = 0;
+            }
+
+            // clear_mods(warp_right_mods_held);
+            clear_mods();
+            for (uint8_t i = 0; i < 8; i++) {
+                if (warp_right_mods_held & MOD_BIT(KC_RCTRL + i)) {
+                    uprintf("[RIGHT] need to unregister %04X\n", KC_RCTRL + i);
+                    unregister_code(KC_RCTRL + i);
+                }
+            }
+
+            warp_right_mods_held = 0;
+            uprintf("WARP RIGHT MODS CLEARED!\n");
             return false;
         }
         break;
@@ -276,7 +337,13 @@ bool process_warp_mods(uint16_t keycode, keyrecord_t *record) {
         if (warp_left_layer_held) {
             layer_off(warp_left_layer_held);
             warp_left_layer_held = 0;
-            uprintf("WARP MOD LAYER CLEARED!\n");
+            uprintf("WARP LEFT MOD LAYER CLEARED!\n");
+            debug_warp_mods(keycode, record);
+        }
+        if (warp_right_layer_held) {
+            layer_off(warp_right_layer_held);
+            warp_right_layer_held = 0;
+            uprintf("WARP RIGHT MOD LAYER CLEARED!\n");
             debug_warp_mods(keycode, record);
         }
         break;
@@ -284,6 +351,10 @@ bool process_warp_mods(uint16_t keycode, keyrecord_t *record) {
 
     if (warp_left_layer_held) {
         set_mods(warp_left_mods_held);
+        debug_warp_mods(keycode, record);
+    }
+    if (warp_right_layer_held) {
+        set_mods(warp_right_mods_held);
         debug_warp_mods(keycode, record);
     }
 
