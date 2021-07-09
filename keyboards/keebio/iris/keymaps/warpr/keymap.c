@@ -3,6 +3,7 @@
 
 #define _DVORAK 0
 #define _NUM 1
+#define _MODS 2
 // #define _SYSTEM 3
 
 #define KUNO_REFRESH    SCMD(KC_R)
@@ -10,17 +11,26 @@
 #define KUNO_EMOJI      LCTL(LCMD(KC_SPC))
 
 enum custom_keycodes {
-  DVORAK = SAFE_RANGE,
-  NUM,
+  WARP_MODS_MIN = (SAFE_RANGE | 0x0f) + 1,
+  WARP_MODS_MAX = WARP_MODS_MIN + 0x10,
   WORD_L,  // emacs word left (ESC, B)
   WORD_R,  // emacs word right (ESC, F)
 };
 
-static bool emacs_backspace_held = false;
-static bool emacs_down_held = false;
-static bool emacs_left_held = false;
-static bool emacs_right_held = false;
-static bool emacs_up_held = false;
+/*
+
+WARP_MOD(layer)
+- When pressed, switches to specified layer (which should have only
+  the four modifiers for a single hand)
+- As soon as a modifier is pressed, that modifier is registered.
+- When the modifier is physically released, the modifier remains held.
+- If any further modifiers are pressed, they also remain held.
+- If a non-modifier key is pressed, the modifier layer is turned off.
+- Modifiers remain held until the WARP_MOD() key is released.
+
+*/
+
+#define WARP_MOD(layer) (WARP_MODS_MIN | ((layer)&0x0F))
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
@@ -34,7 +44,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
      KC_LSFT, KC_SCOLON, KC_Q,  KC_J,    KC_K,    KC_X,    KC_MPLY,       KUNO_EMOJI, KC_B,    KC_M,    KC_W,    KC_V,    KC_Z,    KC_RSFT,
   //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
-                                 KC_LOPT, KC_LCMD, LT(_NUM, KC_SPC),       LT(_NUM, KC_ENT), KC_RCMD, KC_ROPT
+                           KC_LOPT, WARP_MOD(_MODS), LT(_NUM, KC_SPC),       LT(_NUM, KC_ENT), KC_RCMD, KC_ROPT
                                 // └────────┴────────┴────────┘                 └────────┴────────┴────────┘
   ),
 
@@ -50,7 +60,22 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
                                     _______, _______, _______,                   _______, _______, _______
                                 // └────────┴────────┴────────┘                 └────────┴────────┴────────┘
+  ),
+
+  [_MODS] = LAYOUT(
+  //┌────────┬────────┬────────┬────────┬────────┬────────┐                          ┌────────┬────────┬────────┬────────┬────────┬────────┐
+     _______, _______, _______, _______, _______, _______,                            _______, _______, _______, _______, _______, _______,
+  //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
+     _______, _______, _______, _______, _______, _______,                            _______, _______, _______, _______, _______, _______,
+  //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
+     _______, KC_LCTRL, KC_LSFT, KC_LOPT, KC_LCMD, _______,                           _______, KC_RCMD, KC_ROPT, KC_RSFT, KC_RCTRL, _______,
+  //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
+     _______, _______, _______, _______, _______, _______, _______,          _______, _______, _______, _______, _______, _______, _______,
+  //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
+                                    _______, _______, _______,                   _______, _______, _______
+                                // └────────┴────────┴────────┘                 └────────┴────────┴────────┘
   )
+
 /*
   [_SYSTEM] = LAYOUT(
   //┌────────┬────────┬────────┬────────┬────────┬────────┐                          ┌────────┬────────┬────────┬────────┬────────┬────────┐
@@ -60,7 +85,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
      KC_F5,   KC_F6,   KC_F7,   KC_F8,   _______, _______,                            _______, KC_INS,  KC_HOME, KC_PGUP, _______, DEBUG,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-     KC_F9,   KC_F10,  KC_F11,  KC_F12,  _______, _______,                            _______, KC_DEL,  KC_END,  KC_PGDN, _______, RESET,
+     KC_F9,   KC_F10,  KC_F11,  KC_F12,  _______, _______, _______,          _______, _______, KC_DEL,  KC_END,  KC_PGDN, _______, RESET,
   //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
                                     _______, _______, _______,                   _______, _______, _______
                                 // └────────┴────────┴────────┘                 └────────┴────────┴────────┘
@@ -68,34 +93,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 */
 };
 
-bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+static bool emacs_backspace_held = false;
+static bool emacs_down_held = false;
+static bool emacs_left_held = false;
+static bool emacs_right_held = false;
+static bool emacs_up_held = false;
+
+bool process_emacs_nav(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
-    case DVORAK:
-        if (record->event.pressed) {
-            set_single_persistent_default_layer(_DVORAK);
-        }
-        return false;
-        break;
-    case NUM:
-        if (record->event.pressed) {
-            layer_on(_NUM);
-        } else {
-            layer_off(_NUM);
-        }
-        return false;
-        break;
-    case WORD_L:
-        // Emacs word left (ESC, B)
-        if (record->event.pressed) {
-            SEND_STRING(SS_TAP(X_ESC)"b");
-        }
-        break;
-    case WORD_R:
-        // Emacs word right (ESC, F)
-        if (record->event.pressed) {
-            SEND_STRING(SS_TAP(X_ESC)"f");
-        }
-        break;
     case KC_P:
         if (record->event.pressed) {
             // if CTRL+P is pressed, send up arrow instead
@@ -188,9 +193,106 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
         }
         break;
+
+    case WORD_L:
+        // Emacs word left (ESC, B)
+        if (record->event.pressed) {
+            SEND_STRING(SS_TAP(X_ESC)"b");
+        }
+        return false;
+        break;
+
+    case WORD_R:
+        // Emacs word right (ESC, F)
+        if (record->event.pressed) {
+            SEND_STRING(SS_TAP(X_ESC)"f");
+        }
+        return false;
+        break;
     }
 
     return true;
+}
+
+static uint8_t warp_left_layer_held = 0;
+static uint8_t warp_left_mods_held = 0;
+
+void debug_warp_mods(uint16_t keycode, keyrecord_t *record) {
+    uprintf(
+        "WARP MODS: kc: 0x%04X, pressed: %b, layer held: 0x%04X, mods held: 0x%04X\n",
+        keycode,
+        record->event.pressed,
+        warp_left_layer_held,
+        warp_left_mods_held
+    );
+}
+
+bool process_warp_mods(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+    case KC_LCTRL ... KC_LGUI:
+        if (record->event.pressed) {
+            if (warp_left_layer_held) {
+                warp_left_mods_held = warp_left_mods_held | MOD_BIT(keycode);
+
+                uprintf("MOD ACTIVATED: 0x%04X, current mods: 0x%04X\n", MOD_BIT(keycode), warp_left_mods_held);
+            }
+        } else {
+            if (warp_left_layer_held) {
+                // don't unregister this key press
+                return false;
+            }
+        }
+        break;
+    case WARP_MODS_MIN ... WARP_MODS_MAX:
+        if (record->event.pressed) {
+            uint8_t layer = keycode & 0x0F;
+            layer_on(layer);
+            warp_left_layer_held = layer;
+            uprintf("WARP MOD LAYER ENGAGED!\n");
+            return false;
+        } else {
+            if (warp_left_layer_held) {
+                layer_off(warp_left_layer_held);
+                warp_left_layer_held = 0;
+            }
+
+            // clear_mods(warp_left_mods_held);
+            clear_mods();
+            for (uint8_t i = 0; i < 8; i++) {
+                if (warp_left_mods_held & MOD_BIT(KC_LCTRL + i)) {
+                    uprintf("need to unregister %04X\n", KC_LCTRL + i);
+                    unregister_code(KC_LCTRL + i);
+                }
+            }
+
+            warp_left_mods_held = 0;
+            uprintf("WARP MODS CLEARED!\n");
+            return false;
+        }
+        break;
+    default:
+        // any other key breaks out of the modifier layer, so the modifiers
+        // can be combined with other keys as long as the layer key is still held.
+        if (warp_left_layer_held) {
+            layer_off(warp_left_layer_held);
+            warp_left_layer_held = 0;
+            uprintf("WARP MOD LAYER CLEARED!\n");
+            debug_warp_mods(keycode, record);
+        }
+        break;
+    }
+
+    if (warp_left_layer_held) {
+        set_mods(warp_left_mods_held);
+        debug_warp_mods(keycode, record);
+    }
+
+    return true;
+}
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    return process_warp_mods(keycode, record)
+        && process_emacs_nav(keycode, record);
 }
 
 bool encoder_update_user(uint8_t index, bool clockwise) {
