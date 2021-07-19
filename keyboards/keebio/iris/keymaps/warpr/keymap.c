@@ -53,7 +53,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
      S(KC_GRAVE), S(KC_1), S(KC_2), S(KC_3), S(KC_4), S(KC_5),                        S(KC_6), S(KC_7), S(KC_8), S(KC_9), S(KC_0), S(KC_EQL),
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-     KC_GRAVE, KC_1,   KC_2,    KC_3,    KC_4,    KC_5,                               KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_BSPC,
+     KC_GRAVE, KC_1,   KC_2,    KC_3,    KC_4,    KC_5,                               KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_EQL,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
      _______, _______, S(KC_LBRC), KC_LBRC, KC_RBRC, S(KC_RBRC), _______,    _______,  S(KC_SLASH), KC_SLASH, KC_BSLS, S(KC_BSLS), _______, _______,
   //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
@@ -63,106 +63,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 };
 
-static bool emacs_backspace_held = false;
-static bool emacs_down_held = false;
-static bool emacs_left_held = false;
-static bool emacs_right_held = false;
-static bool emacs_up_held = false;
-
 bool process_emacs_nav(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
-    case KC_P:
-        if (record->event.pressed) {
-            // if CTRL+P is pressed, send up arrow instead
-            // NOTE: just CTRL, so e.g. CTRL+ALT doesn't count
-            // NOTE: Left CTRL only, so Right CTRL sends plain CTRL+P
-            if (get_mods() == MOD_BIT(KC_LCTRL)) {
-                del_mods(MOD_BIT(KC_LCTRL));
-                register_code(KC_UP);
-                emacs_up_held = true;
-                set_mods(MOD_BIT(KC_LCTRL));
-                return false;
-            }
-        } else {
-            if (emacs_up_held) {
-                unregister_code(KC_UP);
-                emacs_up_held = false;
-                return false;
-            }
-        }
-        break;
-
-    case KC_N:
-        if (record->event.pressed) {
-            if (get_mods() == MOD_BIT(KC_LCTRL)) {
-                del_mods(MOD_BIT(KC_LCTRL));
-                register_code(KC_DOWN);
-                emacs_down_held = true;
-                set_mods(MOD_BIT(KC_LCTRL));
-                return false;
-            }
-        } else {
-            if (emacs_down_held) {
-                unregister_code(KC_DOWN);
-                emacs_down_held = false;
-                return false;
-            }
-        }
-        break;
-
-    case KC_B:
-        if (record->event.pressed) {
-            if (get_mods() == MOD_BIT(KC_LCTRL)) {
-                del_mods(MOD_BIT(KC_LCTRL));
-                register_code(KC_LEFT);
-                emacs_left_held = true;
-                set_mods(MOD_BIT(KC_LCTRL));
-                return false;
-            }
-        } else {
-            if (emacs_left_held) {
-                unregister_code(KC_LEFT);
-                emacs_left_held = false;
-                return false;
-            }
-        }
-        break;
-
-    case KC_F:
-        if (record->event.pressed) {
-            if (get_mods() == MOD_BIT(KC_LCTRL)) {
-                del_mods(MOD_BIT(KC_LCTRL));
-                register_code(KC_RIGHT);
-                emacs_right_held = true;
-                set_mods(MOD_BIT(KC_LCTRL));
-                return false;
-            }
-        } else {
-            if (emacs_right_held) {
-                unregister_code(KC_RIGHT);
-                emacs_right_held = false;
-                return false;
-            }
-        }
-        break;
-
-    case KC_H:
-        if (record->event.pressed) {
-            if (get_mods() == MOD_BIT(KC_LCTRL)) {
-                del_mods(MOD_BIT(KC_LCTRL));
-                register_code(KC_BSPACE);
-                emacs_backspace_held = true;
-                set_mods(MOD_BIT(KC_LCTRL));
-                return false;
-            }
-        } else {
-            if (emacs_backspace_held) {
-                unregister_code(KC_BSPACE);
-                emacs_backspace_held = false;
-                return false;
-            }
-        }
-        break;
 
     case WORD_L:
         // Emacs word left (ESC, B)
@@ -180,11 +82,10 @@ bool process_emacs_nav(uint16_t keycode, keyrecord_t *record) {
         return false;
         break;
 
-        /*
     case PAGE_B:
         // Emacs backward-page, C-X [
         if (record->event.pressed) {
-            SEND_STRING(SS_LCTL(X_X) "[");
+            SEND_STRING(SS_LCTL("x") "[");
         }
         return false;
         break;
@@ -192,11 +93,10 @@ bool process_emacs_nav(uint16_t keycode, keyrecord_t *record) {
     case PAGE_F:
         // Emacs forward-page, C-X ]
         if (record->event.pressed) {
-            SEND_STRING(SS_LCTL(X_X) "]");
+            SEND_STRING(SS_LCTL("x") "]");
         }
         return false;
         break;
-        */
     }
 
     return true;
