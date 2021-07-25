@@ -13,8 +13,6 @@
 enum custom_keycodes {
   WORD_L = SAFE_RANGE,  // emacs word left (ESC, B)
   WORD_R,  // emacs word right (ESC, F)
-  PAGE_B,  // emacs backward-page, C-X [
-  PAGE_F,  // emacs forward-page, C-X ]
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -29,7 +27,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
      KC_LSFT, KC_SCOLON, KC_Q,  KC_J,    KC_K,    KC_X,    KC_MPLY,       KUNO_EMOJI, KC_B,    KC_M,    KC_W,    KC_V,    KC_Z,    KC_RSFT,
   //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
-                                    KC_LOPT, KC_LCMD, LT(_NUM, KC_SPC),  LT(_NUM, KC_ENT), TT(_NAV), _______
+                                    KC_LOPT, KC_LCMD, LT(_NAV, KC_SPC),  LT(_NUM, KC_ENT), KC_RCMD, KC_ROPT
                                 // └────────┴────────┴────────┘                 └────────┴────────┴────────┘
   ),
 
@@ -37,11 +35,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //┌────────┬────────┬────────┬────────┬────────┬────────┐                          ┌────────┬────────┬────────┬────────┬────────┬────────┐
      RESET,  DEBUG,    _______, _______, _______, KUNO_REFRESH,                 KUNO_DEVTOOLS, _______, _______, _______, DEBUG,   RESET,
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-     _______, _______, _______, PAGE_F,  PAGE_B,  KC_HOME,                            KC_INS,  WORD_L,  WORD_R,  _______, _______, KC_BSPC,
+     _______, KC_INS,  WORD_L,  KC_UP,   WORD_R,  KC_PGUP,                            KC_INS,  WORD_L,  KC_UP,   WORD_R,  KC_PGUP, KC_BSPC,
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-     _______, _______, _______, KC_DOWN, KC_UP,   KC_END,                             KC_DEL,  KC_LEFT, KC_RIGHT, _______, _______, _______,
+     _______, KC_DEL,  KC_LEFT, KC_DOWN, KC_RIGHT, KC_PGDN,                           KC_DEL,  KC_LEFT, KC_DOWN, KC_RIGHT, KC_PGDN, _______,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-     _______, _______, _______, KC_PGDN, KC_PGUP, _______, _______,          _______, _______, A(KC_LEFT), A(KC_RIGHT), _______, _______, _______,
+     _______, _______, KC_HOME, _______, KC_END,  _______, _______,          _______, _______, KC_HOME,  _______, KC_END, _______, _______,
   //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
                                     _______, _______, _______,                   _______, _______, _______
                                 // └────────┴────────┴────────┘                 └────────┴────────┴────────┘
@@ -82,21 +80,6 @@ bool process_emacs_nav(uint16_t keycode, keyrecord_t *record) {
         return false;
         break;
 
-    case PAGE_B:
-        // Emacs backward-page, C-X [
-        if (record->event.pressed) {
-            SEND_STRING(SS_LCTL("x") "[");
-        }
-        return false;
-        break;
-
-    case PAGE_F:
-        // Emacs forward-page, C-X ]
-        if (record->event.pressed) {
-            SEND_STRING(SS_LCTL("x") "]");
-        }
-        return false;
-        break;
     }
 
     return true;
