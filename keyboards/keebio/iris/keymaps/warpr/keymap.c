@@ -13,6 +13,8 @@
 enum custom_keycodes {
   WORD_L = SAFE_RANGE,  // emacs word left (ESC, B)
   WORD_R,  // emacs word right (ESC, F)
+  PAGE_B,  // emacs backward-page, C-X [
+  PAGE_F,  // emacs forward-page, C-X ]
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -35,11 +37,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //┌────────┬────────┬────────┬────────┬────────┬────────┐                          ┌────────┬────────┬────────┬────────┬────────┬────────┐
      RESET,  DEBUG,    _______, _______, _______, KUNO_REFRESH,                 KUNO_DEVTOOLS, _______, _______, _______, DEBUG,   RESET,
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-     _______, KC_INS,  WORD_L,  KC_UP,   WORD_R,  KC_PGUP,                            KC_INS,  WORD_L,  KC_UP,   WORD_R,  KC_PGUP, KC_BSPC,
+     KC_HOME, KC_PGUP,  WORD_L,  KC_UP,   WORD_R,  PAGE_B,                            KC_DEL,  S(KC_LBRC), S(KC_RBRC), S(KC_SLASH), S(KC_BSLS), KC_BSPACE,
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-     _______, KC_DEL,  KC_LEFT, KC_DOWN, KC_RIGHT, KC_PGDN,                           KC_DEL,  KC_LEFT, KC_DOWN, KC_RIGHT, KC_PGDN, _______,
+     KC_END,  KC_PGDN,  KC_LEFT, KC_DOWN, KC_RIGHT, PAGE_F,                           KC_DEL,  KC_LBRC, KC_RBRC, KC_SLASH, KC_BSLS, KC_BSPACE,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-     _______, _______, KC_HOME, _______, KC_END,  _______, _______,          _______, _______, KC_HOME,  _______, KC_END, _______, _______,
+     _______, _______, _______, _______, _______, _______, _______,          _______, _______, _______, _______, _______, _______, _______,
   //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
                                     _______, _______, _______,                   _______, _______, _______
                                 // └────────┴────────┴────────┘                 └────────┴────────┴────────┘
@@ -53,7 +55,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
      KC_GRAVE, KC_1,   KC_2,    KC_3,    KC_4,    KC_5,                               KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_EQL,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-     _______, _______, S(KC_LBRC), KC_LBRC, KC_RBRC, S(KC_RBRC), _______,    _______,  S(KC_SLASH), KC_SLASH, KC_BSLS, S(KC_BSLS), _______, _______,
+     _______, _______, _______, _______, _______, _______, _______,          _______, _______, _______, _______, _______, _______, _______,
   //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
                                     _______, _______, _______,                   _______, _______, _______
                                 // └────────┴────────┴────────┘                 └────────┴────────┴────────┘
@@ -67,19 +69,34 @@ bool process_emacs_nav(uint16_t keycode, keyrecord_t *record) {
     case WORD_L:
         // Emacs word left (ESC, B)
         if (record->event.pressed) {
-            SEND_STRING(SS_TAP(X_ESC)"b");
+            SEND_STRING(SS_TAP(X_ESC) "b");
         }
         return false;
-        break;
 
     case WORD_R:
         // Emacs word right (ESC, F)
         if (record->event.pressed) {
-            SEND_STRING(SS_TAP(X_ESC)"f");
+            SEND_STRING(SS_TAP(X_ESC) "f");
         }
         return false;
-        break;
 
+    case PAGE_B:
+        // Emacs backward-page, C-X [
+        if (record->event.pressed) {
+            SEND_STRING(SS_LCTL("x"));
+        } else {
+            SEND_STRING("[");
+        }
+        return false;
+
+    case PAGE_F:
+        // Emacs forward-page, C-X ]
+        if (record->event.pressed) {
+            SEND_STRING(SS_LCTL("x"));
+        } else {
+            SEND_STRING("]");
+        }
+        return false;
     }
 
     return true;
