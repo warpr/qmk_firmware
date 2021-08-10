@@ -123,7 +123,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 }
 
 bool encoder_update_user(uint8_t index, bool clockwise) {
-    if (IS_LAYER_ON(_SYM)) {
+    if (IS_LAYER_ON(_MOUSE)) {
+        encoder_update_mouse(index ^ 1, clockwise);
+    } else {
         if (index == 0) {
             if (clockwise) {
                 tap_code(KC_VOLU);
@@ -137,8 +139,6 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
                 backlight_decrease();
             }
         }
-    } else {
-        encoder_update_mouse(index, clockwise);
     }
 
     return true;
