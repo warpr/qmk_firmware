@@ -35,4 +35,4 @@ SLEEP_LED_ENABLE = no    # Breathing sleep LED during USB suspend
 SPLIT_KEYBOARD = yes
 ENCODER_ENABLE = yes
 
-SRC += encoder_mouse.c
+

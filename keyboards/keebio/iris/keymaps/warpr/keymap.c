@@ -1,6 +1,5 @@
 #include QMK_KEYBOARD_H
 #include "print.h"
-#include "encoder_mouse.h"
 
 #define _DVORAK 0
 #define _SYM 1
@@ -16,6 +15,8 @@ enum custom_keycodes {
   WORD_R,  // emacs word right (ESC, F)
   PAGE_B,  // emacs backward-page, C-X [
   PAGE_F,  // emacs forward-page, C-X ]
+  DROP,
+  HOLD,
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -54,7 +55,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
      _______, _______, _______, _______, _______, _______,                            PAGE_B,  WORD_L,  KC_UP,   WORD_R,  KC_PGUP, KC_HOME,
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-     _______, _______, _______, _______, _______, _______,                            PAGE_F,  KC_LEFT, KC_DOWN, KC_RIGHT, KC_PGDN, KC_END,
+     _______, DROP,    DROP,    DROP,    DROP,    _______,                            PAGE_F,  KC_LEFT, KC_DOWN, KC_RIGHT, KC_PGDN, KC_END,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
      _______, _______, _______, KC_BTN3, KC_BTN2, KC_BTN1, _______,          _______, _______, _______, _______, _______, _______, _______,
   //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
@@ -63,6 +64,40 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   )
 
 };
+
+bool process_drop(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+    case DROP:
+        if (record->event.pressed) {
+            uprintf(
+                "DROP | KL: kc: 0x%04X, col: %u, row: %u, pressed: %b, time: %u, interrupt: %b, count: %u\n",
+                keycode, record->event.key.col, record->event.key.row, record->event.pressed, record->event.time, record->tap.interrupted, record->tap.count);
+
+            for (int8_t i = MAX_LAYER - 1; i >= 0; i--) {
+                if (layer_state_is(i)) {
+                    uint16_t layer_kc = keymap_key_to_keycode(i, record->event.key);
+                    uprintf("DROP layer 0x%X is on, kc: 0x%04X, DROP is 0x%04X\n", i, layer_kc, DROP);
+                    if (layer_kc == DROP) {
+                        layer_off(i);
+                    } else {
+                        // we've dropped enough, and turned off layers along the way
+                        return true;
+                    }
+                }
+            }
+
+            // we've dropped all the way down to 0 and still found a DROP keycode there,
+            // that doesn't seem a useful configuration.  Let's just claim we handled it.
+            return false;
+        } else {
+            uprintf("DROP released? 0x%04X\n", keycode);
+        }
+
+        return false;
+    }
+
+    return true;
+}
 
 bool process_emacs_nav(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
@@ -103,26 +138,48 @@ bool process_emacs_nav(uint16_t keycode, keyrecord_t *record) {
     return true;
 }
 
+/*
+- tmk_core/common/action.c::process_record(record)
+  |
+  +-- quantum/quantum.c::process_record_quantum(record)
+  |   |
+  |   + -- process_record_kb(keycode, record)
+  |   |    |
+  |   |    +-- process_record_user(keycode, record)
+  |   |
+  |   +-- process_action_kb(record)
+  |
+  +-- process_record_handler(record)
+  |   |
+  |   +-- store_or_get_action(record->event.pressed, record->event.key)
+  |   |   |
+  |   |   +-- layer_switch_get_action(key)
+  |   |
+  |   +-- process_action(record, action)
+  |
+  +-- post_process_record_quantum(record)
+ */
+
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    return process_emacs_nav(keycode, record);
+    return (
+        process_drop(keycode, record) &&
+        process_emacs_nav(keycode, record)
+    );
 }
 
 bool encoder_update_user(uint8_t index, bool clockwise) {
-    if (IS_LAYER_ON(_NAV)) {
-        encoder_update_mouse(index ^ 1, clockwise);
-    } else {
-        if (index == 0) {
-            if (clockwise) {
-                tap_code(KC_VOLU);
-            } else {
-                tap_code(KC_VOLD);
-            }
+    if (index == 0) {
+        if (clockwise) {
+            tap_code(KC_VOLU);
         } else {
-            if (clockwise) {
-                backlight_increase();
-            } else {
-                backlight_decrease();
-            }
+            tap_code(KC_VOLD);
+        }
+    } else {
+        if (clockwise) {
+            backlight_increase();
+        } else {
+            backlight_decrease();
         }
     }
 
