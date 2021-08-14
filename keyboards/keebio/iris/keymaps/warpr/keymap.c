@@ -4,20 +4,24 @@
 #define _DVORAK 0
 #define _SYM 1
 #define _NAV 2
-#define _SYSTEM 3
+#define _MOD_L 3
+#define _MOD_R 4
 
 #define KUNO_REFRESH    SCMD(KC_R)
 #define KUNO_DEVTOOLS   LCMD(A(KC_I))
 #define KUNO_EMOJI      LCTL(LCMD(KC_SPC))
 
 enum custom_keycodes {
-  WORD_L = SAFE_RANGE,  // emacs word left (ESC, B)
+  HOLD_MIN = (SAFE_RANGE | 0x0f) + 1,
+  HOLD_MAX = HOLD_MIN + 0x10,
+  WORD_L,  // emacs word left (ESC, B)
   WORD_R,  // emacs word right (ESC, F)
   PAGE_B,  // emacs backward-page, C-X [
   PAGE_F,  // emacs forward-page, C-X ]
   DROP,
-  HOLD,
 };
+
+#define HOLD(layer) (HOLD_MIN | ((layer)&0x0F))
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
@@ -25,13 +29,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //┌────────┬────────┬────────┬────────┬────────┬────────┐                          ┌────────┬────────┬────────┬────────┬────────┬────────┐
      _______, _______, _______, _______, _______, KUNO_REFRESH,                 KUNO_DEVTOOLS, _______, _______, _______, _______, _______,
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-     KC_TAB,  KC_QUOT, KC_COMM, KC_DOT,  KC_P,    KC_Y,                               KC_F,    KC_G,    KC_C,    KC_R,    KC_L,    KC_ESC,
+     KC_ESC,  KC_QUOT, KC_COMM, KC_DOT,  KC_P,    KC_Y,                               KC_F,    KC_G,    KC_C,    KC_R,    KC_L,    KC_BSPACE,
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-     KC_LCTRL, KC_A,   KC_O,    KC_E,    KC_U,    KC_I,                               KC_D,    KC_H,    KC_T,    KC_N,    KC_S,    KC_MINUS,
+     KC_TAB,  KC_A,    KC_O,    KC_E,    KC_U,    KC_I,                               KC_D,    KC_H,    KC_T,    KC_N,    KC_S,    KC_MINUS,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-     KC_LSPO, KC_SCOLON, KC_Q,  KC_J,    KC_K,    KC_X,    KC_MPLY,       KUNO_EMOJI, KC_B,    KC_M,    KC_W,    KC_V,    KC_Z,    KC_RSPC,
+     KC_LPRN, KC_SCOLON, KC_Q,  KC_J,    KC_K,    KC_X,    KC_MPLY,       KUNO_EMOJI, KC_B,    KC_M,    KC_W,    KC_V,    KC_Z,    KC_RPRN,
   //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
-                                    KC_LOPT, KC_LCMD, LT(_SYM, KC_SPC),  LT(_SYM, KC_ENT), MO(_NAV), MO(_NAV)
+                                    _______,  KC_SPC, HOLD(_MOD_L),         HOLD(_MOD_R), KC_ENT, _______
                                 // └────────┴────────┴────────┘                 └────────┴────────┴────────┘
   ),
 
@@ -55,32 +59,57 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
      _______, _______, _______, _______, _______, _______,                            PAGE_B,  WORD_L,  KC_UP,   WORD_R,  KC_PGUP, KC_HOME,
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-     _______, DROP,    DROP,    DROP,    DROP,    _______,                            PAGE_F,  KC_LEFT, KC_DOWN, KC_RIGHT, KC_PGDN, KC_END,
+     _______, _______, _______, _______, _______, _______,                            PAGE_F,  KC_LEFT, KC_DOWN, KC_RIGHT, KC_PGDN, KC_END,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
      _______, _______, _______, KC_BTN3, KC_BTN2, KC_BTN1, _______,          _______, _______, _______, _______, _______, _______, _______,
   //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
                                     _______, _______, _______,                   _______, _______, _______
                                 // └────────┴────────┴────────┘                 └────────┴────────┴────────┘
+  ),
+
+  [_MOD_L] = LAYOUT(
+  //┌────────┬────────┬────────┬────────┬────────┬────────┐                          ┌────────┬────────┬────────┬────────┬────────┬────────┐
+      DROP,    DROP,    DROP,    DROP,    DROP,    DROP,                               DROP,    DROP,    DROP,    DROP,    DROP,    DROP,
+  //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
+      DROP,    DROP,   TO(_NAV), TO(_SYM), DROP,   DROP,                               DROP,    DROP,    DROP,    DROP,    DROP,    DROP,
+  //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
+      DROP,    KC_LOPT, KC_LCMD, KC_LSFT, KC_LCTL, DROP,                               DROP,    DROP,    DROP,    DROP,    DROP,    DROP,
+  //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
+      DROP,    DROP,    DROP,    DROP,    DROP,    DROP,    DROP,             DROP,    DROP,    DROP,    DROP,    DROP,    DROP,    DROP,
+  //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
+                                     DROP,    DROP,   _______,                   _______,  DROP,    DROP
+                                // └────────┴────────┴────────┘                 └────────┴────────┴────────┘
+  ),
+
+  [_MOD_R] = LAYOUT(
+  //┌────────┬────────┬────────┬────────┬────────┬────────┐                          ┌────────┬────────┬────────┬────────┬────────┬────────┐
+      DROP,    DROP,    DROP,    DROP,    DROP,    DROP,                               DROP,    DROP,    DROP,    DROP,    DROP,    DROP,
+  //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
+      DROP,    DROP,    DROP,    DROP,    DROP,    DROP,                               DROP,    DROP,   TO(_SYM), TO(_NAV), DROP,   DROP,
+  //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
+      DROP,    DROP,    DROP,    DROP,    DROP,    DROP,                               DROP,    KC_RCTL, KC_RSFT, KC_RCMD, KC_ROPT, DROP,
+  //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
+      DROP,    DROP,    DROP,    DROP,    DROP,    DROP,    DROP,             DROP,    DROP,    DROP,    DROP,    DROP,    DROP,    DROP,
+  //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
+                                     DROP,    DROP,   _______,                   _______,  DROP,    DROP
+                                // └────────┴────────┴────────┘                 └────────┴────────┴────────┘
   )
 
 };
+
+static uint8_t warp_hold_active = 0;
 
 bool process_drop(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
     case DROP:
         if (record->event.pressed) {
-            uprintf(
-                "DROP | KL: kc: 0x%04X, col: %u, row: %u, pressed: %b, time: %u, interrupt: %b, count: %u\n",
-                keycode, record->event.key.col, record->event.key.row, record->event.pressed, record->event.time, record->tap.interrupted, record->tap.count);
-
             for (int8_t i = MAX_LAYER - 1; i >= 0; i--) {
                 if (layer_state_is(i)) {
-                    uint16_t layer_kc = keymap_key_to_keycode(i, record->event.key);
-                    uprintf("DROP layer 0x%X is on, kc: 0x%04X, DROP is 0x%04X\n", i, layer_kc, DROP);
-                    if (layer_kc == DROP) {
+                    if (DROP == keymap_key_to_keycode(i, record->event.key)) {
+                        // turn off this layer, and continue dropping down.
                         layer_off(i);
                     } else {
-                        // we've dropped enough, and turned off layers along the way
+                        // no DROP at this key pos in the current layer, we're done.
                         return true;
                     }
                 }
@@ -89,11 +118,41 @@ bool process_drop(uint16_t keycode, keyrecord_t *record) {
             // we've dropped all the way down to 0 and still found a DROP keycode there,
             // that doesn't seem a useful configuration.  Let's just claim we handled it.
             return false;
-        } else {
-            uprintf("DROP released? 0x%04X\n", keycode);
         }
 
         return false;
+
+    case HOLD_MIN ... HOLD_MAX:
+        if (record->event.pressed) {
+            uint8_t layer = keycode & 0x0F;
+            layer_on(layer);
+            uprintf("HOLD is active. Switching to layer 0x%02X.  Mods are 0x%02X\n", layer, get_mods());
+            warp_hold_active = 1;
+            return false;
+        } else {
+            warp_hold_active = 0;
+            layer_clear();
+            uint8_t current_mods = get_mods();
+            clear_mods();
+            unregister_mods(current_mods);
+            uprintf("HOLD released.  Mods are 0x%02X\n", get_mods());
+            return false;
+        }
+        break;
+
+    case KC_LCTRL ... KC_RGUI:
+        if (record->event.pressed) {
+            return true;
+        } else {
+            if (warp_hold_active) {
+                uprintf("HOLD active, not releasing mods: 0x%02X\n", get_mods());
+                // don't release mods while hold is active, just claim we handled it
+                return false;
+            } else {
+                return true;
+            }
+        }
+        break;
     }
 
     return true;
@@ -160,7 +219,6 @@ bool process_emacs_nav(uint16_t keycode, keyrecord_t *record) {
   +-- post_process_record_quantum(record)
  */
 
-
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     return (
         process_drop(keycode, record) &&
@@ -189,6 +247,6 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
 void keyboard_post_init_keymap(void) {
 #if BACKLIGHT_ENABLE
     backlight_enable();
-    backlight_level(5);
+    backlight_level(3);
 #endif
 }
