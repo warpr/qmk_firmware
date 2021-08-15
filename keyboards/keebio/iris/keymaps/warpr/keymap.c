@@ -1,3 +1,20 @@
+/**
+ * Copyright 2021  Kuno Woudt <kuno@frob.nl>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include QMK_KEYBOARD_H
 #include "print.h"
 #include "encoder_mouse.h"
@@ -7,10 +24,6 @@
 #define _NAV 2
 #define _SYSTEM 3
 
-#define KUNO_REFRESH    SCMD(KC_R)
-#define KUNO_DEVTOOLS   LCMD(A(KC_I))
-#define KUNO_EMOJI      LCTL(LCMD(KC_SPC))
-
 enum custom_keycodes {
   WORD_L = SAFE_RANGE,  // emacs word left (ESC, B)
   WORD_R,  // emacs word right (ESC, F)
@@ -18,19 +31,27 @@ enum custom_keycodes {
   PAGE_F,  // emacs forward-page, C-X ]
 };
 
+#define KW_FRSH    SCMD(KC_R)    // browser refresh
+#define KW_DEVT    LCMD(A(KC_I))  // browser dev tools
+#define KW_EMOJ    LCTL(LCMD(KC_SPC))
+
+#define KW_SPACE   LT(_SYM, KC_SPC)
+#define KW_ENTER   LT(_SYM, KC_ENT)
+#define KW_NAV     MO(_NAV)
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   [_DVORAK] = LAYOUT(
   //┌────────┬────────┬────────┬────────┬────────┬────────┐                          ┌────────┬────────┬────────┬────────┬────────┬────────┐
-     _______, _______, _______, _______, _______, KUNO_REFRESH,                 KUNO_DEVTOOLS, _______, _______, _______, _______, _______,
+     _______, _______, _______, _______, _______, KW_FRSH,                            KW_DEVT, _______, _______, _______, _______, _______,
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
      KC_TAB,  KC_QUOT, KC_COMM, KC_DOT,  KC_P,    KC_Y,                               KC_F,    KC_G,    KC_C,    KC_R,    KC_L,    KC_ESC,
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
      KC_LCTRL, KC_A,   KC_O,    KC_E,    KC_U,    KC_I,                               KC_D,    KC_H,    KC_T,    KC_N,    KC_S,    KC_MINUS,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-     KC_LSPO, KC_SCOLON, KC_Q,  KC_J,    KC_K,    KC_X,    KC_MPLY,       KUNO_EMOJI, KC_B,    KC_M,    KC_W,    KC_V,    KC_Z,    KC_RSPC,
+     KC_LSPO, KC_SCOLON, KC_Q,  KC_J,    KC_K,    KC_X,    KC_MPLY,          KW_EMOJ, KC_B,    KC_M,    KC_W,    KC_V,    KC_Z,    KC_RSPC,
   //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
-                                    KC_LOPT, KC_LCMD, LT(_SYM, KC_SPC),  LT(_SYM, KC_ENT), MO(_NAV), MO(_NAV)
+                                    KC_LOPT, KC_LCMD, KW_SPACE,                  KW_ENTER, KW_NAV, KW_NAV
                                 // └────────┴────────┴────────┘                 └────────┴────────┴────────┘
   ),
 
