@@ -141,69 +141,57 @@ void keyboard_post_init_user(void) {
   rgb_matrix_enable();
 }
 
-// Oryx colors
-// alphas       = Solarized -> Lavendar
-// modifiers    = Rubik's Cube -> Green
-// destructive  = Rubik's Cube -> Red
-// punctuation  = Rubik's Cube -> Orange
-// spacing      = Cosmic Chocolate -> White
-// navigation   = Cosmic Chocolate -> White
-// emoji        = Rubik's Cube -> Yellow
-// macros       = Sunset -> Purple
+#define RGB(r, g, b)  {0x##r, 0x##g, 0x##b}
 
-#define KWC_WHITE        {0,0,255}
-#define KWC_BLACK        {0,0,0}
-#define KWC_YELLO        {35,255,255}
-#define KWC_BLUE         {161,151,242}
-#define KWC_RED          {249,228,255}
-#define KWC_GREEN        {105,255,255}
-#define KWC_PURPL        {205,255,255}
-#define KWC_BLUE2        {154,255,255}
+#define KW_WHITE    RGB(FF,FF,FF)   // white      -- spacing / navigation
+#define KW_BLACK    RGB(00,00,00)   // black      -- key is off or transparent in this layer
+#define KW_YELLO    RGB(FF,D0,00)   // yellow     -- punctuation + emoji macro
+#define KW_LBLUE    RGB(63,82,F2)   // light blue -- alphas
+#define KW_RED      RGB(FF,1C,3A)   // red        -- destructive keys
+#define KW_GREEN    RGB(00,FF,77)   // green      -- modifiers
+#define KW_PURPL    RGB(D0,00,FF)   // purple     -- macros
+#define KW_BLUE     RGB(00,61,FF)   // blue       -- function keys
 
 const uint8_t PROGMEM ledmap[][DRIVER_LED_TOTAL][3] = {
     [_DVORAK] = {
-        KWC_WHITE, KWC_YELLO, KWC_YELLO, KWC_YELLO, KWC_BLUE,  KWC_BLUE,           KWC_BLUE,  KWC_BLUE,  KWC_BLUE,  KWC_BLUE,  KWC_BLUE,  KWC_RED,
-        KWC_GREEN, KWC_BLUE,  KWC_BLUE,  KWC_BLUE,  KWC_BLUE,  KWC_BLUE,           KWC_BLUE,  KWC_BLUE,  KWC_BLUE,  KWC_BLUE,  KWC_BLUE,  KWC_YELLO,
-        KWC_GREEN, KWC_YELLO, KWC_BLUE , KWC_BLUE,  KWC_BLUE,  KWC_BLUE,           KWC_BLUE,  KWC_BLUE,  KWC_BLUE,  KWC_BLUE,  KWC_BLUE,  KWC_GREEN,
-        KWC_PURPL, KWC_BLACK, KWC_GREEN, KWC_GREEN, KWC_YELLO,           KWC_PURPL,           KWC_PURPL, KWC_GREEN, KWC_GREEN, KWC_YELLO, KWC_PURPL
+        KW_WHITE, KW_YELLO, KW_YELLO, KW_YELLO, KW_LBLUE, KW_LBLUE,         KW_LBLUE, KW_LBLUE, KW_LBLUE, KW_LBLUE, KW_LBLUE, KW_RED,
+        KW_GREEN, KW_LBLUE, KW_LBLUE, KW_LBLUE, KW_LBLUE, KW_LBLUE,         KW_LBLUE, KW_LBLUE, KW_LBLUE, KW_LBLUE, KW_LBLUE, KW_YELLO,
+        KW_GREEN, KW_YELLO, KW_LBLUE, KW_LBLUE, KW_LBLUE, KW_LBLUE,         KW_LBLUE, KW_LBLUE, KW_LBLUE, KW_LBLUE, KW_LBLUE, KW_GREEN,
+        KW_PURPL, KW_BLACK, KW_GREEN, KW_GREEN, KW_YELLO,          KW_PURPL,          KW_PURPL, KW_GREEN, KW_GREEN, KW_YELLO, KW_PURPL
     },
 
     [_SYM] = {
-        KWC_YELLO, KWC_YELLO, KWC_YELLO, KWC_YELLO, KWC_YELLO, KWC_YELLO,          KWC_YELLO, KWC_YELLO, KWC_YELLO, KWC_YELLO, KWC_YELLO, KWC_YELLO,
-        KWC_YELLO, KWC_YELLO, KWC_YELLO, KWC_YELLO, KWC_YELLO, KWC_YELLO,          KWC_YELLO, KWC_YELLO, KWC_YELLO, KWC_YELLO, KWC_YELLO, KWC_YELLO,
-        KWC_BLACK, KWC_BLACK, KWC_BLACK, KWC_BLACK, KWC_BLACK, KWC_BLACK,          KWC_BLACK, KWC_BLACK, KWC_BLACK, KWC_BLACK, KWC_BLACK, KWC_BLACK,
-        KWC_BLACK, KWC_GREEN, KWC_GREEN, KWC_GREEN, KWC_BLACK,           KWC_BLACK,           KWC_BLACK, KWC_GREEN, KWC_GREEN, KWC_BLACK, KWC_BLACK
+        KW_YELLO, KW_YELLO, KW_YELLO, KW_YELLO, KW_YELLO, KW_YELLO,         KW_YELLO, KW_YELLO, KW_YELLO, KW_YELLO, KW_YELLO, KW_YELLO,
+        KW_YELLO, KW_YELLO, KW_YELLO, KW_YELLO, KW_YELLO, KW_YELLO,         KW_YELLO, KW_YELLO, KW_YELLO, KW_YELLO, KW_YELLO, KW_YELLO,
+        KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK,         KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK,
+        KW_BLACK, KW_GREEN, KW_GREEN, KW_GREEN, KW_BLACK,          KW_BLACK,          KW_BLACK, KW_GREEN, KW_GREEN, KW_BLACK, KW_BLACK
     },
 
     [_NAV] = {
-        KWC_BLACK, KWC_BLACK, KWC_BLACK, KWC_BLACK, KWC_BLACK, KWC_BLACK,          KWC_WHITE, KWC_WHITE, KWC_PURPL, KWC_WHITE, KWC_WHITE, KWC_WHITE,
-        KWC_BLACK, KWC_BLACK, KWC_BLACK, KWC_BLACK, KWC_BLACK, KWC_BLACK,          KWC_WHITE, KWC_PURPL, KWC_PURPL, KWC_PURPL, KWC_WHITE, KWC_WHITE,
-        KWC_BLACK, KWC_BLACK, KWC_BLACK, KWC_BLACK, KWC_BLACK, KWC_BLACK,          KWC_BLACK, KWC_RED,   KWC_RED,   KWC_BLACK, KWC_BLACK, KWC_BLACK,
-        KWC_BLACK, KWC_BLACK, KWC_GREEN, KWC_GREEN, KWC_BLACK,           KWC_BLACK,           KWC_BLACK, KWC_GREEN, KWC_GREEN, KWC_BLACK, KWC_BLACK
+        KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK,          KW_WHITE, KW_WHITE, KW_PURPL, KW_WHITE, KW_WHITE, KW_WHITE,
+        KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK,          KW_WHITE, KW_PURPL, KW_PURPL, KW_PURPL, KW_WHITE, KW_WHITE,
+        KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK,          KW_BLACK, KW_RED,   KW_RED,   KW_BLACK, KW_BLACK, KW_BLACK,
+        KW_BLACK, KW_BLACK, KW_GREEN, KW_GREEN, KW_BLACK,          KW_BLACK,           KW_BLACK, KW_GREEN, KW_GREEN,  KW_BLACK, KW_BLACK
     },
 
     [_SYSTEM] = {
-        KWC_BLACK, KWC_BLUE2, KWC_BLUE2, KWC_BLUE2, KWC_BLUE2, KWC_BLACK,          KWC_WHITE, KWC_RED,   KWC_RED,   KWC_RED,   KWC_BLACK, KWC_BLACK,
-        KWC_BLACK, KWC_BLUE2, KWC_BLUE2, KWC_BLUE2, KWC_BLUE2, KWC_BLACK,          KWC_BLACK, KWC_BLACK, KWC_BLACK, KWC_BLACK, KWC_BLACK, KWC_WHITE,
-        KWC_BLACK, KWC_BLUE2, KWC_BLUE2, KWC_BLUE2, KWC_BLUE2, KWC_BLACK,          KWC_BLACK, KWC_BLACK, KWC_BLACK, KWC_BLACK, KWC_BLACK, KWC_RED,
-        KWC_BLACK, KWC_BLACK, KWC_BLACK, KWC_BLACK, KWC_BLACK,           KWC_BLACK,           KWC_BLACK, KWC_BLACK, KWC_BLACK, KWC_BLACK, KWC_BLACK
+        KW_BLACK, KW_BLUE,  KW_BLUE,  KW_BLUE,  KW_BLUE,  KW_BLACK,          KW_WHITE, KW_RED,   KW_RED,   KW_RED,   KW_BLACK, KW_BLACK,
+        KW_BLACK, KW_BLUE,  KW_BLUE,  KW_BLUE,  KW_BLUE,  KW_BLACK,          KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK, KW_WHITE,
+        KW_BLACK, KW_BLUE,  KW_BLUE,  KW_BLUE,  KW_BLUE,  KW_BLACK,          KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK, KW_RED,
+        KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK,           KW_BLACK,          KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK
     },
 };
 
 void set_layer_color(int layer) {
   for (int i = 0; i < DRIVER_LED_TOTAL; i++) {
-    HSV hsv = {
-      .h = pgm_read_byte(&ledmap[layer][i][0]),
-      .s = pgm_read_byte(&ledmap[layer][i][1]),
-      .v = pgm_read_byte(&ledmap[layer][i][2]),
+    RGB rgb = {
+      .r = pgm_read_byte(&ledmap[layer][i][0]),
+      .g = pgm_read_byte(&ledmap[layer][i][1]),
+      .b = pgm_read_byte(&ledmap[layer][i][2]),
     };
-    if (!hsv.h && !hsv.s && !hsv.v) {
-        rgb_matrix_set_color( i, 0, 0, 0 );
-    } else {
-        RGB rgb = hsv_to_rgb( hsv );
-        float f = (float)rgb_matrix_config.hsv.v / UINT8_MAX;
-        rgb_matrix_set_color( i, f * rgb.r, f * rgb.g, f * rgb.b );
-    }
+
+    float f = (float)rgb_matrix_config.hsv.v / UINT8_MAX;
+    rgb_matrix_set_color( i, f * rgb.r, f * rgb.g, f * rgb.b );
   }
 }
 
