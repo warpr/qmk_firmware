@@ -23,8 +23,41 @@
 #include "rgb_matrix.h"
 #include "warpr.h"
 
+#define LAYOUT_planck_grid_wrapper(...)      LAYOUT_planck_grid(__VA_ARGS__)
+
+#define ____PLANCK_L4____ KW_FRSH, _______,  _______, KC_LCMD, KC_LCTRL, KW_SPACE
+#define ____PLANCK_R4____ KC_NO,   KW_ENTER, KC_ROPT, _______, KW_EMOJ,  KW_DEVT
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
+    [_DVORAK] = LAYOUT_planck_grid_wrapper(
+      ____DVORAK_L1____, ____DVORAK_R1____,
+      ____DVORAK_L2____, ____DVORAK_R2____,
+      ____DVORAK_L3____, ____DVORAK_R3____,
+      ____PLANCK_L4____, ____PLANCK_R4____
+    ),
+
+    [_LOWER] = LAYOUT_planck_grid_wrapper(
+      ____LOWER__L1____, ____LOWER__R1____,
+      ____LOWER__L2____, ____LOWER__R2____,
+      ____LOWER__L3____, ____LOWER__R3____,
+      ____PLANCK_L4____, ____PLANCK_R4____
+    ),
+
+    [_RAISE] = LAYOUT_planck_grid_wrapper(
+      ____RAISE__L1____, ____RAISE__R1____,
+      ____RAISE__L2____, ____RAISE__R2____,
+      ____RAISE__L3____, ____RAISE__R3____,
+      ____PLANCK_L4____, ____PLANCK_R4____
+    ),
+
+    [_ADJUST] = LAYOUT_planck_grid_wrapper(
+      ____ADJUST_L1____, ____ADJUST_R1____,
+      ____ADJUST_L2____, ____ADJUST_R2____,
+      ____ADJUST_L3____, ____ADJUST_R3____,
+      ____PLANCK_L4____, ____PLANCK_R4____
+    ),
+/*
   [_DVORAK] = LAYOUT_planck_grid(
   //┌────────┬────────┬────────┬────────┬────────┬────────┐                          ┌────────┬────────┬────────┬────────┬────────┬────────┐
      KC_ESC,  KC_QUOT, KC_COMM, KC_DOT,  KC_P,    KC_Y,                               KC_F,    KC_G,    KC_C,    KC_R,    KC_L,    KC_BSPACE,
@@ -33,7 +66,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
      KC_LSPO, KC_SCOLON, KC_Q,  KC_J,    KC_K,    KC_X,                               KC_B,    KC_M,    KC_W,    KC_V,    KC_Z,    KC_RSPC,
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-     KW_FRSH, _______, _______, KC_LCMD, KW_SPACE, KC_LCTRL,                        KC_RCTRL, KW_ENTER, KC_ROPT, _______, KW_EMOJ, KW_DEVT
+     KW_FRSH, _______, _______, KC_LCMD, KC_LCTRL, KW_SPACE,                         KW_SPACE, KW_ENTER, KC_ROPT, _______, KW_EMOJ, KW_DEVT
   //└────────┴────────┴────────┴────────┴────────┴────────┘                          └────────┴────────┴────────┴────────┴────────┴────────┘
   ),
 
@@ -72,11 +105,35 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      _______, _______, _______, _______, _______, _______,                            _______, _______, _______, _______, _______, _______
   //└────────┴────────┴────────┴────────┴────────┴────────┘                          └────────┴────────┴────────┴────────┴────────┴────────┘
   )
+*/
 
 };
 
+uint32_t update_planck_layer_leds(uint32_t state) {
+    planck_ez_left_led_off();
+    planck_ez_right_led_off();
+    switch (get_highest_layer(state)) {
+        case _LOWER:
+            planck_ez_left_led_on();
+            break;
+        case _RAISE:
+            planck_ez_right_led_on();
+            break;
+        case _ADJUST:
+            planck_ez_right_led_on();
+            planck_ez_left_led_on();
+            break;
+        default:
+            break;
+    }
+
+    return state;
+}
+
 uint32_t layer_state_set_user(uint32_t state) {
-    return update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST);
+    return update_planck_layer_leds(
+        update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST)
+    );
 }
 
 void keyboard_post_init_user(void) {
@@ -99,28 +156,28 @@ const uint8_t PROGMEM ledmap[][DRIVER_LED_TOTAL][3] = {
         KW_RED,   KW_YELLO, KW_YELLO, KW_YELLO, KW_LBLUE, KW_LBLUE,         KW_LBLUE, KW_LBLUE, KW_LBLUE, KW_LBLUE, KW_LBLUE, KW_RED,
         KW_WHITE, KW_LBLUE, KW_LBLUE, KW_LBLUE, KW_LBLUE, KW_LBLUE,         KW_LBLUE, KW_LBLUE, KW_LBLUE, KW_LBLUE, KW_LBLUE, KW_YELLO,
         KW_GREEN, KW_YELLO, KW_LBLUE, KW_LBLUE, KW_LBLUE, KW_LBLUE,         KW_LBLUE, KW_LBLUE, KW_LBLUE, KW_LBLUE, KW_LBLUE, KW_GREEN,
-        KW_PURPL, KW_BLACK, KW_BLACK, KW_GREEN, KW_YELLO,          KW_GREEN,          KW_PURPL, KW_GREEN, KW_BLACK, KW_YELLO, KW_PURPL
+        KW_PURPL, KW_BLACK, KW_BLACK, KW_GREEN, KW_GREEN,          KW_YELLO,          KW_PURPL, KW_GREEN, KW_BLACK, KW_YELLO, KW_PURPL
     },
 
     [_LOWER] = {
         KW_YELLO, KW_YELLO, KW_YELLO, KW_YELLO, KW_YELLO, KW_YELLO,         KW_YELLO, KW_YELLO, KW_YELLO, KW_YELLO, KW_YELLO, KW_YELLO,
         KW_YELLO, KW_YELLO, KW_YELLO, KW_YELLO, KW_YELLO, KW_YELLO,         KW_YELLO, KW_YELLO, KW_YELLO, KW_BLACK, KW_YELLO, KW_YELLO,
         KW_YELLO, KW_YELLO, KW_YELLO, KW_YELLO, KW_YELLO, KW_BLACK,         KW_YELLO, KW_YELLO, KW_YELLO, KW_YELLO, KW_YELLO, KW_YELLO,
-        KW_BLACK, KW_BLACK, KW_BLACK, KW_GREEN, KW_BLACK,          KW_GREEN,          KW_BLACK, KW_GREEN, KW_BLACK, KW_BLACK, KW_BLACK
+        KW_BLACK, KW_BLACK, KW_BLACK, KW_GREEN, KW_GREEN,          KW_YELLO,          KW_PURPL, KW_GREEN, KW_BLACK, KW_YELLO, KW_BLACK
     },
 
     [_RAISE] = {
-        KW_BLACK, KW_RED,   KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK,          KW_WHITE, KW_WHITE, KW_PURPL, KW_WHITE, KW_WHITE, KW_WHITE,
-        KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK,          KW_WHITE, KW_PURPL, KW_PURPL, KW_PURPL, KW_WHITE, KW_WHITE,
-        KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK,          KW_BLACK, KW_RED,   KW_RED,   KW_BLACK, KW_BLACK, KW_BLACK,
-        KW_BLACK, KW_BLACK, KW_BLACK, KW_GREEN, KW_BLACK,          KW_GREEN,           KW_BLACK, KW_GREEN, KW_BLACK, KW_BLACK, KW_BLACK
+        KW_BLACK, KW_RED,   KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK,         KW_WHITE, KW_WHITE, KW_PURPL, KW_WHITE, KW_WHITE, KW_WHITE,
+        KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK,         KW_WHITE, KW_PURPL, KW_PURPL, KW_PURPL, KW_WHITE, KW_WHITE,
+        KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK,         KW_BLACK, KW_RED,   KW_RED,   KW_BLACK, KW_BLACK, KW_BLACK,
+        KW_BLACK, KW_BLACK, KW_BLACK, KW_GREEN, KW_GREEN,          KW_YELLO,          KW_PURPL, KW_GREEN, KW_BLACK, KW_YELLO, KW_BLACK
     },
 
     [_ADJUST] = {
-        KW_BLACK, KW_BLUE,  KW_BLUE,  KW_BLUE,  KW_BLUE,  KW_BLACK,          KW_WHITE, KW_RED,   KW_RED,   KW_RED,   KW_BLACK, KW_BLACK,
-        KW_BLACK, KW_BLUE,  KW_BLUE,  KW_BLUE,  KW_BLUE,  KW_BLACK,          KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK, KW_WHITE,
-        KW_BLACK, KW_BLUE,  KW_BLUE,  KW_BLUE,  KW_BLUE,  KW_BLACK,          KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK, KW_RED,
-        KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK,           KW_BLACK,          KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK
+        KW_BLACK, KW_BLUE,  KW_BLUE,  KW_BLUE,  KW_BLUE,  KW_BLACK,         KW_WHITE, KW_RED,   KW_RED,   KW_RED,   KW_BLACK, KW_BLACK,
+        KW_BLACK, KW_BLUE,  KW_BLUE,  KW_BLUE,  KW_BLUE,  KW_BLACK,         KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK, KW_WHITE,
+        KW_BLACK, KW_BLUE,  KW_BLUE,  KW_BLUE,  KW_BLUE,  KW_BLACK,         KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK, KW_BLACK, KW_RED,
+        KW_BLACK, KW_BLACK, KW_BLACK, KW_GREEN, KW_GREEN,          KW_YELLO,          KW_PURPL, KW_GREEN, KW_BLACK, KW_YELLO, KW_BLACK
     },
 
 };
