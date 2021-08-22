@@ -64,8 +64,8 @@ bool process_emacs_nav(uint16_t keycode, keyrecord_t *record);
 
 #define ____LOWER__R0____  KC_F7,    KC_F8,    KC_F9,    KC_F10,     KC_F11,   KC_F12
 #define ____LOWER__R1____  KC_6,     KC_7,     KC_8,     KC_9,       KC_0,     KC_GT
-#define ____LOWER__R3____  KC_QUES,  KC_SLASH, KC_EQL,   KC_BSLASH,  KC_PIPE,  KC_RCBR
-#define ____LOWER__R2____  KC_CIRC,  KC_AMPR,  KC_ASTR,  KC_KP_PLUS, _______,  KC_RBRC
+#define ____LOWER__R2____  KC_QUES,  KC_SLASH, KC_EQL,   KC_BSLASH,  KC_PIPE,  KC_RCBR
+#define ____LOWER__R3____  KC_CIRC,  KC_AMPR,  KC_ASTR,  KC_KP_PLUS, _______,  KC_RBRC
 
 #define ____RAISE__L0____  _______, _______, _______, _______, _______, _______
 #define ____RAISE__L1____  _______, RESET,   _______, _______, _______, _______
