@@ -87,6 +87,13 @@ uint32_t layer_state_set_user(uint32_t state) {
     );
 }
 
+void keyboard_pre_init_user(void) {
+#ifdef AUDIO_ENABLE
+    if (!is_audio_on()) {
+        audio_on();
+    }
+#endif
+}
 void keyboard_post_init_user(void) {
   rgb_matrix_enable();
 }
