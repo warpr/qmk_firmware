@@ -17,137 +17,50 @@
 
 #include QMK_KEYBOARD_H
 #include "print.h"
-#include "encoder_mouse.h"
+#include "warpr.h"
 
-#define _DVORAK 0
-#define _SYM 1
-#define _NAV 2
-#define _SYSTEM 3
+#define LAYOUT_wrapper(...)      LAYOUT(__VA_ARGS__)
 
-enum custom_keycodes {
-  WORD_L = SAFE_RANGE,  // emacs word left (ESC, B)
-  WORD_R,  // emacs word right (ESC, F)
-  PAGE_B,  // emacs backward-page, C-X [
-  PAGE_F,  // emacs forward-page, C-X ]
-};
-
-#define KW_FRSH    SCMD(KC_R)    // browser refresh
-#define KW_DEVT    LCMD(A(KC_I))  // browser dev tools
-#define KW_EMOJ    LCTL(LCMD(KC_SPC))
-
-#define KW_SPACE   LT(_SYM, KC_SPC)
-#define KW_ENTER   LT(_SYM, KC_ENT)
-#define KW_NAV     MO(_NAV)
+#define ____IRIS___L4____ KC_LOPT,  KC_LCMD, KW_SPACE
+#define ____IRIS___R4____ KW_ENTER, KC_RCMD, KC_ROPT
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
-  [_DVORAK] = LAYOUT(
-  //┌────────┬────────┬────────┬────────┬────────┬────────┐                          ┌────────┬────────┬────────┬────────┬────────┬────────┐
-     _______, _______, _______, _______, _______, KW_FRSH,                            KW_DEVT, _______, _______, _______, _______, _______,
-  //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-     KC_TAB,  KC_QUOT, KC_COMM, KC_DOT,  KC_P,    KC_Y,                               KC_F,    KC_G,    KC_C,    KC_R,    KC_L,    KC_ESC,
-  //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-     KC_LCTRL, KC_A,   KC_O,    KC_E,    KC_U,    KC_I,                               KC_D,    KC_H,    KC_T,    KC_N,    KC_S,    KC_MINUS,
-  //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-     KC_LSPO, KC_SCOLON, KC_Q,  KC_J,    KC_K,    KC_X,    KC_MPLY,          KW_EMOJ, KC_B,    KC_M,    KC_W,    KC_V,    KC_Z,    KC_RSPC,
-  //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
-                                    KC_LOPT, KC_LCMD, KW_SPACE,                  KW_ENTER, KW_NAV, KW_NAV
-                                // └────────┴────────┴────────┘                 └────────┴────────┴────────┘
-  ),
+    [_DVORAK] = LAYOUT_wrapper(
+      ____DVORAK_L0____,                    ____DVORAK_R0____,
+      ____DVORAK_L1____,                    ____DVORAK_R1____,
+      ____DVORAK_L2____,                    ____DVORAK_R2____,
+      ____DVORAK_L3____, KC_MPLY,  KW_EMOJ, ____DVORAK_R3____,
+      ____IRIS___L4____,                    ____IRIS___R4____
+    ),
 
-  [_SYM] = LAYOUT(
-  //┌────────┬────────┬────────┬────────┬────────┬────────┐                          ┌────────┬────────┬────────┬────────┬────────┬────────┐
-      KC_F1,  KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,                              KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,
-  //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-     KC_GRAVE, KC_1,   KC_2,    KC_3,    KC_4,    KC_5,                               KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_BSPACE,
-  //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-     _______,  S(KC_LBRC), KC_LBRC, S(KC_4), KC_RBRC, S(KC_RBRC),                     S(KC_SLASH), KC_SLASH, KC_EQL, KC_BSLS, S(KC_BSLS), KC_KP_PLUS,
-  //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-     _______,  S(KC_1), S(KC_2), S(KC_3), S(KC_GRAVE), S(KC_5), RESET,         RESET, S(KC_6), S(KC_7), S(KC_8), S(KC_9), S(KC_0), _______,
-  //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
-                                    _______, _______, _______,                   _______, _______, _______
-                                // └────────┴────────┴────────┘                 └────────┴────────┴────────┘
-  ),
+    [_LOWER] = LAYOUT_wrapper(
+      ____LOWER__L0____,                    ____LOWER__R0____,
+      ____LOWER__L1____,                    ____LOWER__R1____,
+      ____LOWER__L2____,                    ____LOWER__R2____,
+      ____LOWER__L3____, RESET,    RESET,   ____LOWER__R3____,
+      ____IRIS___L4____,                    ____IRIS___R4____
+    ),
 
-  [_NAV] = LAYOUT(
-  //┌────────┬────────┬────────┬────────┬────────┬────────┐                          ┌────────┬────────┬────────┬────────┬────────┬────────┐
-     _______, _______, _______, _______, _______, _______,                            _______, _______, _______, _______, _______, _______,
-  //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-     _______, _______, _______, _______, _______, _______,                            PAGE_B,  WORD_L,  KC_UP,   WORD_R,  KC_PGUP, KC_HOME,
-  //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-     _______, _______, _______, _______, _______, _______,                            PAGE_F,  KC_LEFT, KC_DOWN, KC_RIGHT, KC_PGDN, KC_END,
-  //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-     _______, _______, _______, KC_BTN3, KC_BTN2, KC_BTN1, _______,          _______, _______, _______, _______, _______, _______, _______,
-  //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
-                                    _______, _______, _______,                   _______, _______, _______
-                                // └────────┴────────┴────────┘                 └────────┴────────┴────────┘
-  )
+    [_RAISE] = LAYOUT_wrapper(
+      ____RAISE__L0____,                    ____RAISE__R0____,
+      ____RAISE__L1____,                    ____RAISE__R1____,
+      ____RAISE__L2____,                    ____RAISE__R2____,
+      ____RAISE__L3____, _______,  _______, ____RAISE__R3____,
+      ____IRIS___L4____,                    ____IRIS___R4____
+    ),
 
+    [_ADJUST] = LAYOUT_wrapper(
+      ____ADJUST_L0____,                    ____ADJUST_R0____,
+      ____ADJUST_L1____,                    ____ADJUST_R1____,
+      ____ADJUST_L2____,                    ____ADJUST_R2____,
+      ____ADJUST_L3____, _______,  _______, ____ADJUST_R3____,
+      ____IRIS___L4____,                    ____IRIS___R4____
+    ),
 };
 
-bool process_emacs_nav(uint16_t keycode, keyrecord_t *record) {
-    switch (keycode) {
-
-    case WORD_L:
-        // Emacs word left (ESC, B)
-        if (record->event.pressed) {
-            SEND_STRING(SS_TAP(X_ESC) "b");
-        }
-        return false;
-
-    case WORD_R:
-        // Emacs word right (ESC, F)
-        if (record->event.pressed) {
-            SEND_STRING(SS_TAP(X_ESC) "f");
-        }
-        return false;
-
-    case PAGE_B:
-        // Emacs backward-page, C-X [
-        if (record->event.pressed) {
-            SEND_STRING(SS_LCTL("x"));
-        } else {
-            SEND_STRING("[");
-        }
-        return false;
-
-    case PAGE_F:
-        // Emacs forward-page, C-X ]
-        if (record->event.pressed) {
-            SEND_STRING(SS_LCTL("x"));
-        } else {
-            SEND_STRING("]");
-        }
-        return false;
-    }
-
-    return true;
-}
-
-bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    return process_emacs_nav(keycode, record);
-}
-
-bool encoder_update_user(uint8_t index, bool clockwise) {
-    if (IS_LAYER_ON(_NAV)) {
-        encoder_update_mouse(index ^ 1, clockwise);
-    } else {
-        if (index == 0) {
-            if (clockwise) {
-                tap_code(KC_VOLU);
-            } else {
-                tap_code(KC_VOLD);
-            }
-        } else {
-            if (clockwise) {
-                backlight_increase();
-            } else {
-                backlight_decrease();
-            }
-        }
-    }
-
-    return true;
+uint32_t layer_state_set_user(uint32_t state) {
+    return update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST);
 }
 
 void keyboard_post_init_keymap(void) {
@@ -155,4 +68,26 @@ void keyboard_post_init_keymap(void) {
     backlight_enable();
     backlight_level(5);
 #endif
+}
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    return process_emacs_nav(keycode, record);
+}
+
+bool encoder_update_user(uint8_t index, bool clockwise) {
+    if (index == 0) {
+        if (clockwise) {
+            tap_code(KC_VOLU);
+        } else {
+            tap_code(KC_VOLD);
+        }
+    } else {
+        if (clockwise) {
+            backlight_increase();
+        } else {
+            backlight_decrease();
+        }
+    }
+
+    return true;
 }
