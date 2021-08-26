@@ -58,12 +58,12 @@ bool process_emacs_nav(uint16_t keycode, keyrecord_t *record);
 #define ____DVORAK_R3____  KC_B,     KC_M,     KC_W,     KC_V,     KC_Z,     KC_RSPC
 
 #define ____LOWER__L0____  KC_F1,    KC_F2,    KC_F3,    KC_F4,    KC_F5,    KC_F6
-#define ____LOWER__L1____  KC_LT,    KC_1,     KC_2,     KC_3,     KC_4,     KC_5
+#define ____LOWER__L1____  KC_GRAVE, KC_1,     KC_2,     KC_3,     KC_4,     KC_5
 #define ____LOWER__L2____  KC_LCBR,  KC_EXLM,  KC_AT,    KC_HASH,  KC_DLR,   KC_PERC
-#define ____LOWER__L3____  KC_LBRC,  _______,  KC_COLN,  KC_GRAVE, KC_TILD,  KC_DQUO
+#define ____LOWER__L3____  KC_LBRC,  _______,  _______,  _______,  KC_TILD,  _______
 
 #define ____LOWER__R0____  KC_F7,    KC_F8,    KC_F9,    KC_F10,     KC_F11,   KC_F12
-#define ____LOWER__R1____  KC_6,     KC_7,     KC_8,     KC_9,       KC_0,     KC_GT
+#define ____LOWER__R1____  KC_6,     KC_7,     KC_8,     KC_9,       KC_0,     KC_BSPACE
 #define ____LOWER__R2____  KC_QUES,  KC_SLASH, KC_EQL,   KC_BSLASH,  KC_PIPE,  KC_RCBR
 #define ____LOWER__R3____  KC_CIRC,  KC_AMPR,  KC_ASTR,  KC_KP_PLUS, _______,  KC_RBRC
 

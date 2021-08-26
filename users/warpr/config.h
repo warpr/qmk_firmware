@@ -1,6 +1,6 @@
 
 // See https://beta.docs.qmk.fm/using-qmk/software-features/tap_hold
-#define TAPPING_TERM 150
+#define TAPPING_TERM 200
 // #define PERMISSIVE_HOLD
 // #define IGNORE_MOD_TAP_INTERRUPT
 
