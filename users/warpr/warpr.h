@@ -30,6 +30,10 @@ enum userspace_layers {
 #define KW_EMOJ    LCTL(LCMD(KC_SPC))  // macos emoji picker
 #define KW_MOOM    LCTL(LCMD(KC_M))    // moom window management
 
+#define KW_SHOT3   SCMD(KC_3)          // screenshot (macos)
+#define KW_SHOT4   SCMD(KC_4)          // screenshot (region, macos)
+#define KW_SHOT5   SCMD(KC_5)          // screenshot (window/etc..., macos)
+
 #define KW_SPACE   LT(_LOWER, KC_SPC)
 #define KW_ENTER   LT(_RAISE, KC_ENT)
 
@@ -68,14 +72,14 @@ bool process_emacs_nav(uint16_t keycode, keyrecord_t *record);
 #define ____LOWER__R3____  KC_CIRC,  KC_AMPR,  KC_ASTR,  KC_KP_PLUS, _______,  KC_RBRC
 
 #define ____RAISE__L0____  _______, _______, _______, _______, _______, _______
-#define ____RAISE__L1____  _______, RESET,   _______, _______, _______, _______
+#define ____RAISE__L1____  _______, RESET,   _______, KW_SHOT3, KW_SHOT4, KW_SHOT5
 #define ____RAISE__L2____  _______, _______, _______, _______, _______, _______
 #define ____RAISE__L3____  _______, _______, _______, _______, _______, _______
 
 #define ____RAISE__R0____  _______, _______, _______, _______, _______, _______
-#define ____RAISE__R1____  PAGE_B,  WORD_L,  KC_UP,   WORD_R,  KC_PGUP, KC_HOME
-#define ____RAISE__R2____  PAGE_F,  KC_LEFT, KC_DOWN, KC_RIGHT, KC_PGDN, KC_END
-#define ____RAISE__R3____  _______, KW_MOOM, KC_DEL, KC_BSPACE, _______, _______
+#define ____RAISE__R1____  KC_PGUP, WORD_L,  KC_UP,   WORD_R,  KC_HOME, KC_BSPACE
+#define ____RAISE__R2____  KC_PGDN, KC_LEFT, KC_DOWN, KC_RIGHT, KC_END, _______
+#define ____RAISE__R3____  KW_MOOM, PAGE_B,  KC_DEL,  PAGE_F,  _______, _______
 
 #define ____ADJUST_L0____  _______, _______, _______, _______, _______, _______
 #define ____ADJUST_L1____  _______, KC_F1,   KC_F2,   KC_F3,   KC_F4,   _______
