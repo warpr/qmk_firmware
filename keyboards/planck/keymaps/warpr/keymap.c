@@ -172,5 +172,5 @@ void rgb_matrix_indicators_user(void) {
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    return process_emacs_nav(keycode, record);
+    return process_record_warpr(keycode, record);
 }

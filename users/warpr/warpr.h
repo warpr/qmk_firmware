@@ -30,6 +30,9 @@ enum userspace_layers {
 #define KW_EMOJ    LCTL(LCMD(KC_SPC))  // macos emoji picker
 #define KW_MOOM    LCTL(LCMD(KC_M))    // moom window management
 
+#define WORD_L     LALT(KC_LEFT)       // alt+left (word left, macos/emacs)
+#define WORD_R     LALT(KC_RIGHT)      // alt+right (word right, macos/emacs)
+
 #define KW_SHOT3   SCMD(KC_3)          // screenshot (macos)
 #define KW_SHOT4   SCMD(KC_4)          // screenshot (region, macos)
 #define KW_SHOT5   SCMD(KC_5)          // screenshot (window/etc..., macos)
@@ -37,16 +40,7 @@ enum userspace_layers {
 #define KW_SPACE   LT(_LOWER, KC_SPC)
 #define KW_ENTER   LT(_RAISE, KC_ENT)
 
-
-enum custom_keycodes {
-  UNUSED = SAFE_RANGE,
-  WORD_L,  // emacs word left (ESC, B)
-  WORD_R,  // emacs word right (ESC, F)
-  PAGE_B,  // emacs backward-page, C-X [
-  PAGE_F,  // emacs forward-page, C-X ]
-};
-
-bool process_emacs_nav(uint16_t keycode, keyrecord_t *record);
+bool process_record_warpr(uint16_t keycode, keyrecord_t *record);
 
 // See: https://discord.com/channels/440868230475677696/473506116718952450/862166415619391498
 // for wrapper info
@@ -64,7 +58,7 @@ bool process_emacs_nav(uint16_t keycode, keyrecord_t *record);
 #define ____LOWER__L0____  KC_F1,    KC_F2,    KC_F3,    KC_F4,    KC_F5,    KC_F6
 #define ____LOWER__L1____  KC_GRAVE, KC_1,     KC_2,     KC_3,     KC_4,     KC_5
 #define ____LOWER__L2____  KC_LCBR,  KC_EXLM,  KC_AT,    KC_HASH,  KC_DLR,   KC_PERC
-#define ____LOWER__L3____  KC_LBRC,  _______,  _______,  _______,  KC_TILD,  _______
+#define ____LOWER__L3____  KC_LBRC,  _______,  _______,  _______,  KC_TILD,  KC_SPACE
 
 #define ____LOWER__R0____  KC_F7,    KC_F8,    KC_F9,    KC_F10,     KC_F11,   KC_F12
 #define ____LOWER__R1____  KC_6,     KC_7,     KC_8,     KC_9,       KC_0,     KC_BSPACE
@@ -79,7 +73,7 @@ bool process_emacs_nav(uint16_t keycode, keyrecord_t *record);
 #define ____RAISE__R0____  _______, _______, _______, _______, _______, _______
 #define ____RAISE__R1____  KC_PGUP, WORD_L,  KC_UP,   WORD_R,  KC_HOME, KC_BSPACE
 #define ____RAISE__R2____  KC_PGDN, KC_LEFT, KC_DOWN, KC_RIGHT, KC_END, _______
-#define ____RAISE__R3____  KW_MOOM, PAGE_B,  KC_DEL,  PAGE_F,  _______, _______
+#define ____RAISE__R3____  KC_PENT, KW_MOOM, KC_DEL,  KC_BSPC, _______, _______
 
 #define ____ADJUST_L0____  _______, _______, _______, _______, _______, _______
 #define ____ADJUST_L1____  _______, KC_F1,   KC_F2,   KC_F3,   KC_F4,   _______

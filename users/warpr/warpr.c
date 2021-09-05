@@ -17,41 +17,6 @@
 
 #include "warpr.h"
 
-bool process_emacs_nav(uint16_t keycode, keyrecord_t *record) {
-    switch (keycode) {
-
-    case WORD_L:
-        // Emacs word left (ESC, B)
-        if (record->event.pressed) {
-            SEND_STRING(SS_TAP(X_ESC) "b");
-        }
-        return false;
-
-    case WORD_R:
-        // Emacs word right (ESC, F)
-        if (record->event.pressed) {
-            SEND_STRING(SS_TAP(X_ESC) "f");
-        }
-        return false;
-
-    case PAGE_B:
-        // Emacs backward-page, C-X [
-        if (record->event.pressed) {
-            SEND_STRING(SS_LCTL("x"));
-        } else {
-            SEND_STRING("[");
-        }
-        return false;
-
-    case PAGE_F:
-        // Emacs forward-page, C-X ]
-        if (record->event.pressed) {
-            SEND_STRING(SS_LCTL("x"));
-        } else {
-            SEND_STRING("]");
-        }
-        return false;
-    }
-
+bool process_record_warpr(uint16_t keycode, keyrecord_t *record) {
     return true;
 }

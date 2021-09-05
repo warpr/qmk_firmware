@@ -46,7 +46,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       ____RAISE__L0____,                    ____RAISE__R0____,
       ____RAISE__L1____,                    ____RAISE__R1____,
       ____RAISE__L2____,                    ____RAISE__R2____,
-      ____RAISE__L3____, _______,  _______, ____RAISE__R3____,
+      ____RAISE__L3____, RESET,    RESET,   ____RAISE__R3____,
       ____IRIS___L4____,                    ____IRIS___R4____
     ),
 
@@ -71,7 +71,7 @@ void keyboard_post_init_keymap(void) {
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    return process_emacs_nav(keycode, record);
+    return process_record_warpr(keycode, record);
 }
 
 bool encoder_update_user(uint8_t index, bool clockwise) {
