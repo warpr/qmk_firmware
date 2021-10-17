@@ -49,38 +49,49 @@ bool process_record_warpr(uint16_t keycode, keyrecord_t *record);
 #define ____DVORAK_L1____  KC_TAB,   KC_QUOT,  KC_COMM,  KC_DOT,   KC_P,     KC_Y
 #define ____DVORAK_L2____  KC_LCTL,  KC_A,     KC_O,     KC_E,     KC_U,     KC_I
 #define ____DVORAK_L3____  KC_LSPO,  KC_SCOLON, KC_Q,    KC_J,     KC_K,     KC_X
+#define ____DVORAK_L4____  KC_LOPT,  KC_LCMD,  KW_SPACE
 
 #define ____DVORAK_R0____  KW_DEVT,  _______,  _______,  _______,  _______,  _______
 #define ____DVORAK_R1____  KC_F,     KC_G,     KC_C,     KC_R,     KC_L,     KC_ESC
 #define ____DVORAK_R2____  KC_D,     KC_H,     KC_T,     KC_N,     KC_S,     KC_MINUS
 #define ____DVORAK_R3____  KC_B,     KC_M,     KC_W,     KC_V,     KC_Z,     KC_RSPC
+#define ____DVORAK_R4____  KW_ENTER, KC_RCMD,  KC_ROPT
 
-#define ____LOWER__L0____  KC_F1,    KC_F2,    KC_F3,    KC_F4,    KC_F5,    KC_F6
-#define ____LOWER__L1____  KC_GRAVE, KC_1,     KC_2,     KC_3,     KC_4,     KC_5
-#define ____LOWER__L2____  KC_LCBR,  KC_EXLM,  KC_AT,    KC_HASH,  KC_DLR,   KC_PERC
-#define ____LOWER__L3____  KC_LBRC,  _______,  _______,  _______,  KC_TILD,  KC_SPACE
+#define ____LOWER__L0____  _______,  _______,  _______,  _______,  _______,  _______
+#define ____LOWER__L1____  _______,  KC_PGUP,  WORD_L,   KC_UP,    WORD_R,   KC_HOME
+#define ____LOWER__L2____  _______,  KC_PGDN,  KC_LEFT,  KC_DOWN,  KC_RIGHT, KC_END
+#define ____LOWER__L3____  _______,  _______,  KC_DEL,   KW_SHOT3, KW_SHOT4, KW_SHOT5
+#define ____LOWER__L4____  ____DVORAK_L4____
 
-#define ____LOWER__R0____  KC_F7,    KC_F8,    KC_F9,    KC_F10,     KC_F11,   KC_F12
-#define ____LOWER__R1____  KC_6,     KC_7,     KC_8,     KC_9,       KC_0,     KC_BSPACE
-#define ____LOWER__R2____  KC_QUES,  KC_SLASH, KC_EQL,   KC_BSLASH,  KC_PIPE,  KC_RCBR
-#define ____LOWER__R3____  KC_CIRC,  KC_AMPR,  KC_ASTR,  KC_KP_PLUS, _______,  KC_RBRC
+#define ____LOWER__R0____  _______,  _______,  _______,  _______,  _______,  _______
+#define ____LOWER__R1____  KC_PAST,  KC_7,     KC_8,     KC_9,     KC_PMNS,  KC_BSPACE
+#define ____LOWER__R2____  KC_PSLS,  KC_4,     KC_5,     KC_6,     KC_PPLS,  KC_PENT
+#define ____LOWER__R3____  KC_PDOT,  KC_1,     KC_2,     KC_3,     KC_PEQL,  _______
+#define ____LOWER__R4____  KC_0,     KC_RCMD,  KC_ROPT
 
-#define ____RAISE__L0____  _______, _______, _______, _______, _______, _______
-#define ____RAISE__L1____  _______, RESET,   _______, KW_SHOT3, KW_SHOT4, KW_SHOT5
-#define ____RAISE__L2____  _______, _______, _______, _______, _______, _______
-#define ____RAISE__L3____  _______, _______, _______, _______, _______, _______
+#define ____RAISE__L0____  KC_F1,    KC_F2,    KC_F3,    KC_F4,    KC_F5,    KC_F6
+#define ____RAISE__L1____  _______,  KC_EXLM,  KC_AT,    KC_HASH,  KC_PERC,  _______
+#define ____RAISE__L2____  KC_LCBR,  _______,  KC_GRAVE, KC_TILD,  KC_DLR,   _______
+#define ____RAISE__L3____  KC_LBRC,  _______,  _______,  _______,  _______,  _______
+#define ____RAISE__L4____  KC_LOPT,  KC_LCMD,  MO(_ADJUST)
 
-#define ____RAISE__R0____  _______, _______, _______, _______, _______, _______
-#define ____RAISE__R1____  KC_PGUP, WORD_L,  KC_UP,   WORD_R,  KC_HOME, KC_BSPACE
-#define ____RAISE__R2____  KC_PGDN, KC_LEFT, KC_DOWN, KC_RIGHT, KC_END, _______
-#define ____RAISE__R3____  KC_PENT, KW_MOOM, KC_DEL,  KC_BSPC, _______, _______
+// doesn't currently work, although it should...
+// ref: https://discord.com/channels/440868230475677696/440868230475677698/873311742036418660
+
+#define ____RAISE__R0____  KC_F7,    KC_F8,    KC_F9,    KC_F10,   KC_F11,   KC_F12
+#define ____RAISE__R1____  KC_CIRC,  KC_AMPR,  KC_ASTR,  KC_PLUS,  _______,  _______
+#define ____RAISE__R2____  KC_QUES,  KC_SLASH, KC_EQL,   KC_BSLS,  KC_PIPE,  KC_RCBR
+#define ____RAISE__R3____  KW_EMOJ,  KW_MOOM,  _______,  _______,  _______,  KC_RBRC
+#define ____RAISE__R4____  ____DVORAK_R4____
 
 #define ____ADJUST_L0____  _______, _______, _______, _______, _______, _______
 #define ____ADJUST_L1____  _______, KC_F1,   KC_F2,   KC_F3,   KC_F4,   _______
 #define ____ADJUST_L2____  _______, KC_F5,   KC_F6,   KC_F7,   KC_F8,   _______
 #define ____ADJUST_L3____  _______, KC_F9,   KC_F10,  KC_F11,  KC_F12,  _______
+#define ____ADJUST_L4____  KC_LOPT,  KC_LCMD,  MO(_ADJUST)
 
 #define ____ADJUST_R0____  _______, _______, _______, _______, _______, _______
 #define ____ADJUST_R1____  KC_INS,  KC_PSCR, KC_SLCK, KC_PAUS, _______, _______
 #define ____ADJUST_R2____  _______, _______, _______, _______, _______, _______
 #define ____ADJUST_R3____  _______, _______, _______, _______, _______, RESET
+#define ____ADJUST_R4____  ____DVORAK_R4____

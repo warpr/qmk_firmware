@@ -21,9 +21,6 @@
 
 #define LAYOUT_wrapper(...)      LAYOUT(__VA_ARGS__)
 
-#define ____IRIS___L4____ KC_LOPT,  KC_LCMD, KW_SPACE
-#define ____IRIS___R4____ KW_ENTER, KC_RCMD, KC_ROPT
-
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_DVORAK] = LAYOUT_wrapper(
@@ -31,7 +28,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       ____DVORAK_L1____,                    ____DVORAK_R1____,
       ____DVORAK_L2____,                    ____DVORAK_R2____,
       ____DVORAK_L3____, KC_MPLY,  KW_EMOJ, ____DVORAK_R3____,
-      ____IRIS___L4____,                    ____IRIS___R4____
+      ____DVORAK_L4____,                    ____DVORAK_R4____
     ),
 
     [_LOWER] = LAYOUT_wrapper(
@@ -39,7 +36,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       ____LOWER__L1____,                    ____LOWER__R1____,
       ____LOWER__L2____,                    ____LOWER__R2____,
       ____LOWER__L3____, RESET,    RESET,   ____LOWER__R3____,
-      ____IRIS___L4____,                    ____IRIS___R4____
+      ____LOWER__L4____,                    ____LOWER__R4____
     ),
 
     [_RAISE] = LAYOUT_wrapper(
@@ -47,7 +44,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       ____RAISE__L1____,                    ____RAISE__R1____,
       ____RAISE__L2____,                    ____RAISE__R2____,
       ____RAISE__L3____, RESET,    RESET,   ____RAISE__R3____,
-      ____IRIS___L4____,                    ____IRIS___R4____
+      ____RAISE__L4____,                    ____RAISE__R4____
     ),
 
     [_ADJUST] = LAYOUT_wrapper(
@@ -55,13 +52,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       ____ADJUST_L1____,                    ____ADJUST_R1____,
       ____ADJUST_L2____,                    ____ADJUST_R2____,
       ____ADJUST_L3____, _______,  _______, ____ADJUST_R3____,
-      ____IRIS___L4____,                    ____IRIS___R4____
+      ____ADJUST_L4____,                    ____ADJUST_R4____
     ),
 };
 
-uint32_t layer_state_set_user(uint32_t state) {
-    return update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST);
-}
+/* uint32_t layer_state_set_user(uint32_t state) { */
+/*     return update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST); */
+/* } */
 
 void keyboard_post_init_keymap(void) {
 #if BACKLIGHT_ENABLE

@@ -25,37 +25,34 @@
 
 #define LAYOUT_planck_grid_wrapper(...)      LAYOUT_planck_grid(__VA_ARGS__)
 
-#define ____PLANCK_L4____ KW_FRSH, _______,  KC_LOPT, KC_LCMD, KW_SPACE, KW_SPACE
-#define ____PLANCK_R4____ KC_NO,   KW_ENTER, KC_RCMD, KC_ROPT, KW_EMOJ,  KW_DEVT
-
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_DVORAK] = LAYOUT_planck_grid_wrapper(
       ____DVORAK_L1____, ____DVORAK_R1____,
       ____DVORAK_L2____, ____DVORAK_R2____,
       ____DVORAK_L3____, ____DVORAK_R3____,
-      ____PLANCK_L4____, ____PLANCK_R4____
+      KW_FRSH, _______, ____DVORAK_L4____, KC_SPACE, KC_NO, ____DVORAK_R4____, KW_EMOJ,  KW_DEVT
     ),
 
     [_LOWER] = LAYOUT_planck_grid_wrapper(
       ____LOWER__L1____, ____LOWER__R1____,
       ____LOWER__L2____, ____LOWER__R2____,
       ____LOWER__L3____, ____LOWER__R3____,
-      ____PLANCK_L4____, ____PLANCK_R4____
+      KW_FRSH, _______, ____LOWER__L4____, KC_SPACE, KC_NO, ____LOWER__R4____, KW_EMOJ,  KW_DEVT
     ),
 
     [_RAISE] = LAYOUT_planck_grid_wrapper(
       ____RAISE__L1____, ____RAISE__R1____,
       ____RAISE__L2____, ____RAISE__R2____,
       ____RAISE__L3____, ____RAISE__R3____,
-      ____PLANCK_L4____, ____PLANCK_R4____
+      KW_FRSH, _______, ____RAISE__L4____, KC_SPACE, KC_NO, ____RAISE__R4____, KW_EMOJ,  KW_DEVT
     ),
 
     [_ADJUST] = LAYOUT_planck_grid_wrapper(
       ____ADJUST_L1____, ____ADJUST_R1____,
       ____ADJUST_L2____, ____ADJUST_R2____,
       ____ADJUST_L3____, ____ADJUST_R3____,
-      ____PLANCK_L4____, ____PLANCK_R4____
+      KW_FRSH, _______, ____ADJUST_L4____, KC_SPACE, KC_NO, ____ADJUST_R4____, KW_EMOJ,  KW_DEVT
     ),
 
 };
@@ -108,6 +105,8 @@ void keyboard_post_init_user(void) {
 #define KW_GREEN    RGB(00,FF,77)   // green      -- modifiers
 #define KW_PURPL    RGB(D0,00,FF)   // purple     -- macros
 #define KW_BLUE     RGB(00,61,FF)   // blue       -- function keys
+
+// FIXME: colors are outdated and don't match current keymap
 
 const uint8_t PROGMEM ledmap[][DRIVER_LED_TOTAL][3] = {
     [_DVORAK] = {
