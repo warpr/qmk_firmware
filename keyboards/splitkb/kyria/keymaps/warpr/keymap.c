@@ -33,9 +33,11 @@
 #define KW_SCR4   SCMD(KC_4)          // screenshot (region, macos)
 #define KW_SCR5   SCMD(KC_5)          // screenshot (window/etc..., macos)
 
-#define KW_SPACE   LT(_LOWER, KC_SPC)
+#define KW_SPC   LT(_LOWER, KC_SPC)
 #define KW_TAB     LT(_RAISE, KC_TAB)
 // #define KW_ENTER   LT(_RAISE, KC_ENT)
+
+#define KW_XTRA    MO(_ADJUST)
 
 enum layers {
     _DVORAK = 0,
@@ -47,30 +49,30 @@ enum layers {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_DVORAK] = LAYOUT(
-     KC_ESC,  KC_QUOT,  KC_COMM,  KC_DOT,   KC_P,    KC_Y,                                         KC_F,    KC_G,    KC_C,    KC_R,   KC_L,  KC_ENTER,
-     KC_LCTL, KC_A,     KC_O,     KC_E,     KC_U,    KC_I,                                         KC_D,    KC_H,    KC_T,    KC_N,   KC_S,  KC_MINUS,
-     KC_LSPO, KC_SCLN,  KC_Q,     KC_J,     KC_K,    KC_X,  KW_SPACE, KW_FRSH,   KW_DEVT, KW_TAB, KC_B,    KC_M,    KC_W,    KC_V,   KC_Z,  KC_RSPC,
-                                 KW_EMOJ, KC_LOPT, KC_LCMD, KW_SPACE, KW_FRSH,   KW_DEVT, KW_TAB, KC_RCMD, KC_ROPT, KW_EMOJ
+        KC_ESC,  KC_QUOT, KC_COMM, KC_DOT,  KC_P,    KC_Y,                                           KC_F,    KC_G,    KC_C,    KC_R,   KC_L,    KC_ENTER,
+        KC_LCTL, KC_A,    KC_O,    KC_E,    KC_U,    KC_I,                                           KC_D,    KC_H,    KC_T,    KC_N,   KC_S,    KC_MINUS,
+        KC_LSPO, KC_SCLN, KC_Q,    KC_J,    KC_K,    KC_X,    KW_SPC,  KW_FRSH,    KW_DEVT, KW_TAB,  KC_B,    KC_M,    KC_W,    KC_V,   KC_Z,    KC_RSPC,
+                                   KW_EMOJ, KC_LOPT, KC_LCMD, KW_SPC,  KW_FRSH,    KW_DEVT, KW_TAB,  KC_RCMD, KC_ROPT, KW_EMOJ
     ),
 
     [_LOWER] = LAYOUT(
-      _______, KC_PGUP, WORD_L,  KC_UP,   WORD_R,   KC_HOME,                                       KC_PAST,  KC_7,     KC_8,     KC_9,     KC_PMNS,  KC_BSPACE,
-      _______, KC_PGDN, KC_LEFT, KC_DOWN, KC_RIGHT, KC_END,                                        KC_PSLS,  KC_4,     KC_5,     KC_6,     KC_PPLS,  KC_PENT,
-      _______, _______, KC_DEL,  KW_SCR3, KW_SCR4,  KW_SCR5, _______, _______,   _______, KC_0,    KC_PDOT,  KC_1,     KC_2,     KC_3,     KC_PEQL,  _______,
-                                 RESET,   _______,  _______, _______, _______,   _______, KC_0,    _______, _______, _______
+        _______, KC_PGUP, WORD_L,  KC_UP,   WORD_R,  KC_HOME,                                        KC_PAST, KC_7,    KC_8,    KC_9,   KC_PMNS, KC_BSPACE,
+        _______, KC_PGDN, KC_LEFT, KC_DOWN, KC_RGHT, KC_END,                                         KC_PSLS, KC_4,    KC_5,    KC_6,   KC_PPLS, KC_PENT,
+        _______, _______, KC_DEL,  KW_SCR3, KW_SCR4, KW_SCR5, _______, _______,    _______, KC_0,    KC_PDOT, KC_1,    KC_2,    KC_3,   KC_PEQL, _______,
+                                   RESET,   _______, _______, _______, _______,    _______, KC_0,    _______, _______, _______
     ),
 
     [_RAISE] = LAYOUT(
-     _______, KC_EXLM, KC_AT,    KC_HASH, KC_PERC,  KC_VOLU,                                           KC_CIRC,  KC_AMPR,  KC_ASTR,  KC_PLUS,  KC_QUES,  KC_BSPACE,
-     KC_LCBR, KC_CIRC, KC_GRAVE, KC_TILD, KC_DLR,   KC_VOLD,                                           KC_QUES,  KC_SLASH, KC_EQL,   KC_BSLS,  KC_PIPE,  KC_RCBR,
-     KC_LBRC, _______, KC_MPRV,  KC_MPLY, KC_MNXT,  KC_MUTE, MO(_ADJUST), _______,   _______, _______, _______,  KW_MOOM,  KW_WINF,  KW_WINB,  _______,  KC_RBRC,
-                                  _______, _______, _______, MO(_ADJUST), _______,   _______, _______, _______, _______, RESET
+        _______, KC_EXLM, KC_AT,   KC_HASH, KC_PERC, KC_VOLU,                                        KC_CIRC, KC_AMPR, KC_ASTR, KC_PLUS, KC_QUES, KC_BSPACE,
+        KC_LCBR, KC_CIRC, KC_GRV,  KC_TILD, KC_DLR,  KC_VOLD,                                        KC_QUES, KC_SLSH, KC_EQL,  KC_BSLS, KC_PIPE, KC_RCBR,
+        KC_LBRC, _______, KC_MPRV, KC_MPLY, KC_MNXT, KC_MUTE, KW_XTRA, _______,    _______, _______, _______, KW_MOOM, KW_WINF, KW_WINB, _______, KC_RBRC,
+                                   _______, _______, _______, KW_XTRA, _______,    _______, _______, _______, _______, RESET
     ),
 
     [_ADJUST] = LAYOUT(
-      _______,  KC_F1,   KC_F2,   KC_F3,   KC_F4,  _______,                                           KC_INS,  KC_PSCR, KC_SLCK, KC_PAUS, _______, _______,
-      _______,  KC_F5,   KC_F6,   KC_F7 ,  KC_F8 , _______,                                           _______, _______, _______, _______, _______, _______,
-      _______,  KC_F9,   KC_F10,  KC_F11,  KC_F12, _______, MO(_ADJUST), _______,   _______, _______, _______, _______, _______, _______, _______, _______,
-                                 _______, _______, _______, MO(_ADJUST), _______,   _______, _______, _______, _______, _______
+        _______, KC_F1,   KC_F2,   KC_F3,   KC_F4,   _______,                                        KC_INS,  KC_PSCR, KC_SLCK, KC_PAUS, _______, _______,
+        _______, KC_F5,   KC_F6,   KC_F7 ,  KC_F8,   _______,                                        _______, _______, _______, _______, _______, _______,
+        _______, KC_F9,   KC_F10,  KC_F11,  KC_F12,  _______, KW_XTRA, _______,    _______, _______, _______, _______, _______, _______, _______, _______,
+                                   _______, _______, _______, KW_XTRA, _______,    _______, _______, _______, _______, _______
     )
 };
