@@ -16,6 +16,8 @@
 
 #pragma once
 
+#define EE_HANDS
+
 #ifdef RGBLIGHT_ENABLE
 #    define RGBLIGHT_ANIMATIONS
 #    define RGBLIGHT_HUE_STEP  8
@@ -25,8 +27,8 @@
 #endif
 
 // Lets you roll mod-tap keys
-#define IGNORE_MOD_TAP_INTERRUPT
+// #define IGNORE_MOD_TAP_INTERRUPT
 
 // If you are using an Elite C rev3 on the slave side, uncomment the lines below:
-// #define SPLIT_USB_DETECT
-// #define NO_USB_STARTUP_CHECK
+#define SPLIT_USB_DETECT
+#define NO_USB_STARTUP_CHECK
