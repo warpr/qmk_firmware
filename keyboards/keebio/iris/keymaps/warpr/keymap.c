@@ -17,58 +17,74 @@
 
 #include QMK_KEYBOARD_H
 #include "print.h"
-#include "warpr.h"
 
-#define LAYOUT_wrapper(...)      LAYOUT(__VA_ARGS__)
+#define KW_FRSH    SCMD(KC_R)          // browser refresh
+#define KW_DEVT    LCMD(A(KC_I))       // browser dev tools
+#define KW_EMOJ    LCTL(LCMD(KC_SPC))  // macos emoji picker
+#define KW_MOOM    LCTL(LCMD(KC_M))    // moom window management
+#define KW_WINF    LCMD(KC_GRAVE)      // cmd+` (macos, next window of current app)
+#define KW_WINB    LCMD(KC_TILDE)      // cmd+~ (macos, prev window of current app)
+
+#define WORD_L     LALT(KC_LEFT)       // alt+left (word left, macos/emacs)
+#define WORD_R     LALT(KC_RIGHT)      // alt+right (word right, macos/emacs)
+
+#define KW_SCR3   SCMD(KC_3)          // screenshot (macos)
+#define KW_SCR4   SCMD(KC_4)          // screenshot (region, macos)
+#define KW_SCR5   SCMD(KC_5)          // screenshot (window/etc..., macos)
+
+#define KW_SPC     LT(_LOWER, KC_SPC)
+#define KW_TAB     LT(_RAISE, KC_TAB)
+#define KW_ENT     LT(_RAISE, KC_ENT)
+
+#define KW_XTRA    MO(_ADJUST)
+
+enum layers {
+    _DVORAK = 0,
+    _LOWER,
+    _RAISE,
+    _ADJUST,
+};
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
-    [_DVORAK] = LAYOUT_wrapper(
-      ____DVORAK_L0____,                    ____DVORAK_R0____,
-      ____DVORAK_L1____,                    ____DVORAK_R1____,
-      ____DVORAK_L2____,                    ____DVORAK_R2____,
-      ____DVORAK_L3____, KC_MPLY,  KW_EMOJ, ____DVORAK_R3____,
-      ____DVORAK_L4____,                    ____DVORAK_R4____
+    [_DVORAK] = LAYOUT(
+        _______, _______, _______, _______, _______, KW_FRSH,                    KW_DEVT, _______, _______, _______, _______, _______,
+        KC_TAB,  KC_QUOT, KC_COMM, KC_DOT,  KC_P,    KC_Y,                       KC_F,    KC_G,    KC_C,    KC_R,    KC_L,    KC_ESC,
+        KC_LCTL, KC_A,    KC_O,    KC_E,    KC_U,    KC_I,                       KC_D,    KC_H,    KC_T,    KC_N,    KC_S,    KC_MINUS,
+        KC_LSPO, KC_SCLN, KC_Q,    KC_J,    KC_K,    KC_X,    KC_MPLY,  KW_EMOJ, KC_B,    KC_M,    KC_W,    KC_V,    KC_Z,    KC_RSPC,
+                                            KC_LOPT, KC_LCMD, KW_SPC,   KW_ENT,  KC_RCMD, KC_ROPT
     ),
 
-    [_LOWER] = LAYOUT_wrapper(
-      ____LOWER__L0____,                    ____LOWER__R0____,
-      ____LOWER__L1____,                    ____LOWER__R1____,
-      ____LOWER__L2____,                    ____LOWER__R2____,
-      ____LOWER__L3____, RESET,    RESET,   ____LOWER__R3____,
-      ____LOWER__L4____,                    ____LOWER__R4____
+    [_LOWER] = LAYOUT(
+        _______, _______, _______, _______, _______, _______,                    _______, _______, _______, _______, _______, _______,
+        _______, KC_PGUP, WORD_L,  KC_UP,   WORD_R,  KC_HOME,                    KC_PAST, KC_7,    KC_8,    KC_9,    KC_PMNS, KC_BSPACE,
+        _______, KC_PGDN, KC_LEFT, KC_DOWN, KC_RGHT, KC_END,                     KC_PSLS, KC_4,    KC_5,    KC_6,    KC_PPLS, KC_PENT,
+        _______, _______, KC_DEL,  KW_SCR3, KW_SCR4, KW_SCR5, RESET,    RESET,   KC_PDOT, KC_1,    KC_2,    KC_3,    KC_PEQL, _______,
+                                            KC_LOPT, KC_LCMD, KW_SPC,   KC_0,    KC_RCMD, KC_ROPT
     ),
 
-    [_RAISE] = LAYOUT_wrapper(
-      ____RAISE__L0____,                    ____RAISE__R0____,
-      ____RAISE__L1____,                    ____RAISE__R1____,
-      ____RAISE__L2____,                    ____RAISE__R2____,
-      ____RAISE__L3____, RESET,    RESET,   ____RAISE__R3____,
-      ____RAISE__L4____,                    ____RAISE__R4____
+    [_RAISE] = LAYOUT(
+        _______, _______, _______, _______, _______, _______,                    _______, _______, _______, _______, _______, _______,
+        _______, KC_EXLM, KC_AT,   KC_HASH, KC_PERC, KC_VOLU,                    KC_CIRC, KC_AMPR, KC_ASTR, KC_PLUS, KC_QUES, KC_BSPACE,
+        KC_LCBR, KC_CIRC, KC_GRV,  KC_TILD, KC_DLR,  KC_VOLD,                    KC_QUES, KC_SLSH, KC_EQL,  KC_BSLS, KC_PIPE, KC_RCBR,
+        KC_LBRC, _______, KC_MPRV, KC_MPLY, KC_MNXT, KC_MUTE, RESET,    RESET,   _______, KW_MOOM, KW_WINF, KW_WINB, _______, KC_RBRC,
+                                            _______, _______, KW_XTRA,  _______, _______, _______
     ),
 
-    [_ADJUST] = LAYOUT_wrapper(
-      ____ADJUST_L0____,                    ____ADJUST_R0____,
-      ____ADJUST_L1____,                    ____ADJUST_R1____,
-      ____ADJUST_L2____,                    ____ADJUST_R2____,
-      ____ADJUST_L3____, _______,  _______, ____ADJUST_R3____,
-      ____ADJUST_L4____,                    ____ADJUST_R4____
-    ),
+    [_ADJUST] = LAYOUT(
+        _______, _______, _______, _______, _______, _______,                    _______, _______, _______, _______, _______, _______,
+        _______, KC_F1,   KC_F2,   KC_F3,   KC_F4,   _______,                    KC_INS,  KC_PSCR, KC_SLCK, KC_PAUS, _______, _______,
+        _______, KC_F5,   KC_F6,   KC_F7 ,  KC_F8,   _______,                    _______, _______, _______, _______, _______, _______,
+        _______, KC_F9,   KC_F10,  KC_F11,  KC_F12,  _______, _______,  _______, _______, _______, _______, _______, _______, _______,
+                                            _______, _______, KW_XTRA,  _______, _______, _______
+    )
 };
-
-/* uint32_t layer_state_set_user(uint32_t state) { */
-/*     return update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST); */
-/* } */
 
 void keyboard_post_init_keymap(void) {
 #if BACKLIGHT_ENABLE
     backlight_enable();
     backlight_level(5);
 #endif
-}
-
-bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    return process_record_warpr(keycode, record);
 }
 
 bool encoder_update_user(uint8_t index, bool clockwise) {

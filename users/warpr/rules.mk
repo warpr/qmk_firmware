@@ -1,2 +1,0 @@
-
-SRC += warpr.c
