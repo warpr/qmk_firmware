@@ -35,3 +35,4 @@ SLEEP_LED_ENABLE = no    # Breathing sleep LED during USB suspend
 SPLIT_KEYBOARD = yes
 ENCODER_ENABLE = yes
 
+COMBO_ENABLE = yes			# Enable combos

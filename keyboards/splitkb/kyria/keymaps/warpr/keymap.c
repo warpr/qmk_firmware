@@ -59,14 +59,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _______, KC_PGUP, WORD_L,  KC_UP,   WORD_R,  KC_HOME,                                        KC_PAST, KC_7,    KC_8,    KC_9,   KC_PMNS, KC_BSPACE,
         _______, KC_PGDN, KC_LEFT, KC_DOWN, KC_RGHT, KC_END,                                         KC_PSLS, KC_4,    KC_5,    KC_6,   KC_PPLS, KC_PENT,
         _______, _______, KC_DEL,  KW_SCR3, KW_SCR4, KW_SCR5, _______, _______,    _______, KC_0,    KC_PDOT, KC_1,    KC_2,    KC_3,   KC_PEQL, _______,
-                                   RESET,   _______, _______, _______, _______,    _______, KC_0,    _______, _______, _______
+                                   _______, _______, _______, _______, _______,    _______, KC_0,    _______, _______, _______
     ),
 
     [_RAISE] = LAYOUT(
         _______, KC_EXLM, KC_AT,   KC_HASH, KC_PERC, KC_VOLU,                                        KC_CIRC, KC_AMPR, KC_ASTR, KC_PLUS, KC_QUES, KC_BSPACE,
         KC_LCBR, KC_CIRC, KC_GRV,  KC_TILD, KC_DLR,  KC_VOLD,                                        KC_QUES, KC_SLSH, KC_EQL,  KC_BSLS, KC_PIPE, KC_RCBR,
         KC_LBRC, _______, KC_MPRV, KC_MPLY, KC_MNXT, KC_MUTE, KW_XTRA, _______,    _______, _______, _______, KW_MOOM, KW_WINF, KW_WINB, _______, KC_RBRC,
-                                   _______, _______, _______, KW_XTRA, _______,    _______, _______, _______, _______, RESET
+                                   _______, _______, _______, KW_XTRA, _______,    _______, _______, _______, _______, _______
     ),
 
     [_ADJUST] = LAYOUT(
