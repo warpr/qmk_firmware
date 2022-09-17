@@ -17,8 +17,8 @@ BOOTLOADER = qmk-dfu
 #
 
 BOOTMAGIC_ENABLE = no       # Virtual DIP switch configuration
-MOUSEKEY_ENABLE = yes       # Mouse keys
-POINTING_DEVICE_ENABLE = yes
+MOUSEKEY_ENABLE = no        # Mouse keys
+POINTING_DEVICE_ENABLE = no
 EXTRAKEY_ENABLE = yes       # Audio control and System control
 CONSOLE_ENABLE = yes        # Console for debug
 COMMAND_ENABLE = no         # Commands for debug and configuration
@@ -35,4 +35,4 @@ SLEEP_LED_ENABLE = no    # Breathing sleep LED during USB suspend
 SPLIT_KEYBOARD = yes
 ENCODER_ENABLE = yes
 
-COMBO_ENABLE = yes			# Enable combos
+COMBO_ENABLE = no 			# Enable combos
