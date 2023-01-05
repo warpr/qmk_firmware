@@ -64,15 +64,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_LOWER] = LAYOUT(
         _______, _______, _______, _______, _______, _______,                     _______, _______, _______, _______, _______, _______,
-        SPACE_4, KC_PGUP, WORD_L,  KC_UP,   WORD_R,  KC_HOME,                     _______, KC_7,    KC_8,    KC_9,   _______,  DEL_SPC,
-        _______, KC_PGDN, KC_LEFT, KC_DOWN, KC_RGHT, KC_END,                      _______, KC_4,    KC_5,    KC_6,   _______,  _______,
-        _______, _______, _______, KW_SCR3, KW_SCR4, KW_SCR5, RESET,     RESET,   _______, KC_1,    KC_2,    KC_3,   _______,  _______,
+        SPACE_4, KC_PGUP, WORD_L,  KC_UP,   WORD_R,  KC_HOME,                     KC_DEL,  KC_7,    KC_8,    KC_9,    _______,  KC_BSPACE,
+        _______, KC_PGDN, KC_LEFT, KC_DOWN, KC_RGHT, KC_END,                      _______, KC_4,    KC_5,    KC_6,    _______,  _______,
+        _______, DEL_4,   BSPC_4,  KW_SCR3, KW_SCR4, KW_SCR5, RESET,     RESET,   DEL_SPC, KC_1,    KC_2,    KC_3,    _______,  _______,
                                             _______, _______, _______,   KC_0,    _______, _______
     ),
 
     [_RAISE] = LAYOUT(
         _______, _______, _______, _______, _______, _______,                     _______, _______, _______, _______, _______, _______,
-        SPACE_4, KC_EXLM, KC_AT,   KC_HASH, KC_PERC, KC_VOLU,                     _______, KC_AMPR, KC_ASTR, KC_PLUS, _______, DEL_SPC,
+        SPACE_4, KC_EXLM, KC_AT,   KC_HASH, KC_PERC, KC_VOLU,                     KC_DEL,  KC_AMPR, KC_ASTR, KC_PLUS, _______, KC_BSPACE,
         KC_LCBR, KC_CIRC, KC_GRV,  KC_TILD, KC_DLR,  KC_VOLD,                     KC_QUES, KC_SLSH, KC_EQL,  KC_BSLS, KC_PIPE, KC_RCBR,
         KC_LBRC, _______, KC_MPRV, KC_MPLY, KC_MNXT, KC_MUTE, RESET,    RESET,    DEL_SPC, _______, _______, _______, _______, KC_RBRC,
                                             _______, _______, KW_XTRA,  _______,  _______, _______
@@ -109,5 +109,5 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
         }
     }
 
-    return true;
+    return false;
 }
