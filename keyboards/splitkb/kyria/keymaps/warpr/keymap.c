@@ -39,7 +39,10 @@
 
 #define KW_XTRA    MO(_ADJUST)
 
-#define KC_BSPACE  KC_BACKSPACE
+#define KW_UNDO    LCMD(KC_Z)          // cmd+z  undo
+#define KW_CUT     LCMD(KC_X)          // cmd+x  cut
+#define KW_COPY    LCMD(KC_C)          // cmd+c  copy
+#define KW_PASTE   LCMD(KC_V)          // cmd+v  paste
 
 enum custom_keycodes {
     DEL_SPC = SAFE_RANGE,  // emacs M-\, delete-horizontal-space
@@ -60,22 +63,22 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_DVORAK] = LAYOUT(
         KC_TAB,  KC_QUOT, KC_COMM, KC_DOT,  KC_P,    KC_Y,                                            KC_F,    KC_G,    KC_C,    KC_R,   KC_L,    KC_ESC,
         KC_LCTL, KC_A,    KC_O,    KC_E,    KC_U,    KC_I,                                            KC_D,    KC_H,    KC_T,    KC_N,   KC_S,    KC_MINUS,
-        SC_LSPO, KC_SCLN, KC_Q,    KC_J,    KC_K,    KC_X,    KW_FRSH, KW_EMOJ,    KW_MOOM, KW_DEVT,  KC_B,    KC_M,    KC_W,    KC_V,   KC_Z,    SC_RSPC,
-                                   KC_DEL,  KW_WINB, KC_LCMD, KW_SPC,  KC_LCTL,    KC_RCTL, KW_ENTER, KC_ROPT, KW_WINF, KC_BSPACE
+        KC_LSPO, KC_SCLN, KC_Q,    KC_J,    KC_K,    KC_X,    KW_FRSH, KW_EMOJ,    KW_MOOM, KW_DEVT,  KC_B,    KC_M,    KC_W,    KC_V,   KC_Z,    KC_RSPC,
+                                   KC_LCTL, KW_WINB, KC_LCMD, KW_SPC,  KC_DEL,     KC_BSPC, KW_ENTER, KC_ROPT, KW_WINF, KC_RCTL
     ),
 
     [_LOWER] = LAYOUT(
-        SPACE_4, KC_PGUP, WORD_L,  KC_UP,   WORD_R,  KC_HOME,                                        _______, KC_7,    KC_8,    KC_9,   _______,  DEL_SPC,
-        _______, KC_PGDN, KC_LEFT, KC_DOWN, KC_RGHT, KC_END,                                         _______, KC_4,    KC_5,    KC_6,   _______,  _______,
-        _______, _______, _______, KW_SCR3, KW_SCR4, KW_SCR5, _______, QK_BOOT,    _______, KC_0,    _______, KC_1,    KC_2,    KC_3,   _______,  _______,
-                                   DEL_4,   _______, _______, _______, _______,    _______, KC_0,    _______, _______, BSPC_4
+        SPACE_4, KC_PGUP, WORD_L,  KC_UP,   WORD_R,  KC_HOME,                                        KW_SCR3, KC_7,    KC_8,    KC_9,   _______,  DEL_SPC,
+        _______, KC_PGDN, KC_LEFT, KC_DOWN, KC_RGHT, KC_END,                                         KW_SCR4, KC_4,    KC_5,    KC_6,   _______,  _______,
+        _______, KW_CUT, KW_COPY, KW_PASTE, KC_BTN1, KC_BTN2, _______, QK_BOOT,    _______, KC_0,    KW_SCR5, KC_1,    KC_2,    KC_3,   KW_UNDO,  _______,
+                                   _______, _______, _______, _______, DEL_4,      BSPC_4,  KC_0,    _______, _______, _______
     ),
 
     [_RAISE] = LAYOUT(
         SPACE_4, KC_EXLM, KC_AT,   KC_HASH, KC_PERC, KC_VOLU,                                        _______, KC_AMPR, KC_ASTR, KC_PLUS, _______, DEL_SPC,
         KC_LCBR, KC_CIRC, KC_GRV,  KC_TILD, KC_DLR,  KC_VOLD,                                        KC_QUES, KC_SLSH, KC_EQL,  KC_BSLS, KC_PIPE, KC_RCBR,
         KC_LBRC, _______, KC_MPRV, KC_MPLY, KC_MNXT, KC_MUTE, KW_XTRA, _______,    QK_BOOT, _______, DEL_SPC, _______, _______, _______, _______, KC_RBRC,
-                                   DEL_4,   _______, _______, KW_XTRA, _______,    _______, _______, _______, _______, BSPC_4
+                                   _______, _______, _______, KW_XTRA, DEL_4,      BSPC_4,  _______, _______, _______, _______
     ),
 
     [_ADJUST] = LAYOUT(
