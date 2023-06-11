@@ -35,5 +35,3 @@
 // #define SPLIT_USB_DETECT
 // #define NO_USB_STARTUP_CHECK
 
-/* #define ENCODERS_PAD_A { encoder1a, encoder2a } */
-/* #define ENCODERS_PAD_B { encoder1b, encoder2b } */
