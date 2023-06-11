@@ -1,4 +1,5 @@
 #!/bin/sh
 
 qmk compile -kb splitkb/kyria/rev1 -km warpr
-qmk compile -kb splitkb/kyria/rev2 -km warpr
+qmk compile -kb splitkb/kyria/rev2 -km warpr -e CONVERT_TO=kb2040
+

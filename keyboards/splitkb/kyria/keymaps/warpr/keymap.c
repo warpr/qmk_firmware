@@ -1,6 +1,6 @@
 /**
  * Copyright 2019  Thomas Baart <thomas@splitkb.com>
- * Copyright 2021  Kuno Woudt <kuno@frob.nl>
+ * Copyright 2023  Kuno Woudt <kuno@frob.nl>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 #define KW_FRSH    SCMD(KC_R)          // browser refresh
 #define KW_DEVT    LCMD(A(KC_I))       // browser dev tools
 #define KW_EMOJ    LCTL(LCMD(KC_SPC))  // macos emoji picker
+#define KW_MARK    LCTL(KC_SPC)        // emacs set mark
 #define KW_MOOM    LCTL(LCMD(KC_M))    // moom window management
 #define KW_WINF    LCMD(KC_GRAVE)      // cmd+` (macos, next window of current app)
 #define KW_WINB    LCMD(KC_TILDE)      // cmd+~ (macos, prev window of current app)
@@ -33,16 +34,19 @@
 #define KW_SCR4    SCMD(KC_4)          // screenshot (region, macos)
 #define KW_SCR5    SCMD(KC_5)          // screenshot (window/etc..., macos)
 
-#define KW_SPC     LT(_LOWER, KC_SPC)
-#define KW_TAB     LT(_RAISE, KC_TAB)
-#define KW_ENTER   LT(_RAISE, KC_ENT)
+#define KW_SPC     MT(MOD_LCTL, KC_SPC)
+#define KW_ENTER   LT(_SYMBOL, KC_ENT)
 
-#define KW_XTRA    MO(_ADJUST)
+#define KW_NUM     MO(_NUM)
+#define KW_NAV     MO(_NAV)
+#define KW_XTRA    MO(_EXTRA)
 
 #define KW_UNDO    LCMD(KC_Z)          // cmd+z  undo
 #define KW_CUT     LCMD(KC_X)          // cmd+x  cut
 #define KW_COPY    LCMD(KC_C)          // cmd+c  copy
 #define KW_PASTE   LCMD(KC_V)          // cmd+v  paste
+
+#define KC_BSPC    KC_BACKSPACE
 
 enum custom_keycodes {
     DEL_SPC = SAFE_RANGE,  // emacs M-\, delete-horizontal-space
@@ -53,41 +57,59 @@ enum custom_keycodes {
 
 enum layers {
     _DVORAK = 0,
-    _LOWER,
-    _RAISE,
-    _ADJUST,
+    _SYMBOL,
+    _NUM,
+    _NAV,
+    _EXTRA,
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_DVORAK] = LAYOUT(
         KC_TAB,  KC_QUOT, KC_COMM, KC_DOT,  KC_P,    KC_Y,                                            KC_F,    KC_G,    KC_C,    KC_R,   KC_L,    KC_ESC,
-        KC_LCTL, KC_A,    KC_O,    KC_E,    KC_U,    KC_I,                                            KC_D,    KC_H,    KC_T,    KC_N,   KC_S,    KC_MINUS,
-        KC_LSPO, KC_SCLN, KC_Q,    KC_J,    KC_K,    KC_X,    KW_FRSH, KW_EMOJ,    KW_MOOM, KW_DEVT,  KC_B,    KC_M,    KC_W,    KC_V,   KC_Z,    KC_RSPC,
-                                   KC_DEL,  KW_WINB, KC_LCMD, KW_SPC,  KC_LCTL,    KC_RCTL, KW_ENTER, KC_ROPT, KW_WINF, KC_BSPC
+        KW_MARK, KC_A,    KC_O,    KC_E,    KC_U,    KC_I,                                            KC_D,    KC_H,    KC_T,    KC_N,   KC_S,    KC_MINUS,
+        KW_NUM,  KC_SCLN, KC_Q,    KC_J,    KC_K,    KC_X,    KW_FRSH, KW_EMOJ,    KW_MOOM, KW_DEVT,  KC_B,    KC_M,    KC_W,    KC_V,   KC_Z,    KW_NAV,
+                                   KW_WINB, KC_DEL,  KC_LCMD, KW_SPC,  SC_LSPO,    SC_RSPC, KW_ENTER, KC_ROPT, KC_BSPC, KW_WINF
     ),
 
-    [_LOWER] = LAYOUT(
-        SPACE_4, KC_PGUP, WORD_L,  KC_UP,   WORD_R,  KC_HOME,                                        KW_SCR3, KC_7,    KC_8,    KC_9,   _______,  DEL_SPC,
-        _______, KC_PGDN, KC_LEFT, KC_DOWN, KC_RGHT, KC_END,                                         KW_SCR4, KC_4,    KC_5,    KC_6,   _______,  _______,
-        _______, KW_CUT, KW_COPY, KW_PASTE, KC_BTN1, KC_BTN2, _______, QK_BOOT,    _______, KC_0,    KW_SCR5, KC_1,    KC_2,    KC_3,   KW_UNDO,  _______,
-                                   _______, _______, _______, _______, DEL_4,      BSPC_4,  KC_0,    _______, _______, _______
+    [_SYMBOL] = LAYOUT(
+        SPACE_4, KC_EXLM, KC_AT,   KC_HASH, KC_PERC, _______,                                         _______, KC_AMPR, KC_ASTR, KC_PLUS, _______, DEL_SPC,
+        KC_LCBR, KC_CIRC, KC_GRV,  KC_TILD, KC_DLR,  _______,                                         KC_QUES, KC_SLSH, KC_EQL,  KC_BSLS, KC_PIPE, KC_RCBR,
+        KC_LBRC, _______, KW_CUT, KW_COPY, KW_PASTE, _______, _______, _______,    QK_BOOT, _______,  _______, _______, _______, _______, KW_UNDO, KC_RBRC,
+                                   _______, DEL_4,   _______, _______, _______,    _______, _______,  _______, BSPC_4,  _______
     ),
 
-    [_RAISE] = LAYOUT(
-        SPACE_4, KC_EXLM, KC_AT,   KC_HASH, KC_PERC, KC_VOLU,                                        _______, KC_AMPR, KC_ASTR, KC_PLUS, _______, DEL_SPC,
-        KC_LCBR, KC_CIRC, KC_GRV,  KC_TILD, KC_DLR,  KC_VOLD,                                        KC_QUES, KC_SLSH, KC_EQL,  KC_BSLS, KC_PIPE, KC_RCBR,
-        KC_LBRC, _______, KC_MPRV, KC_MPLY, KC_MNXT, KC_MUTE, KW_XTRA, _______,    QK_BOOT, _______, DEL_SPC, _______, _______, _______, _______, KC_RBRC,
-                                   _______, _______, _______, KW_XTRA, DEL_4,      BSPC_4,  _______, _______, _______, _______
+    [_NUM] = LAYOUT(
+        SPACE_4, _______, _______, _______, _______, _______,                                        KW_SCR3, KC_7,    KC_8,    KC_9,   _______,  DEL_SPC,
+        _______, _______, _______, _______, _______, _______,                                        KW_SCR4, KC_4,    KC_5,    KC_6,   _______,  _______,
+        _______, _______, _______, _______, _______, _______, _______, QK_BOOT,    _______, KC_0,    KW_SCR5, KC_1,    KC_2,    KC_3,   _______,  KW_XTRA,
+                                   _______, DEL_4,   _______, _______, _______,    _______, KC_0,    _______, BSPC_4, _______
     ),
 
-    [_ADJUST] = LAYOUT(
+    [_NAV] = LAYOUT(
+        SPACE_4, S(KC_PGUP), S(WORD_L),  S(KC_UP),   S(WORD_R),  S(KC_HOME),                         KC_PGUP, WORD_L,  KC_UP,   WORD_R,  KC_HOME, DEL_SPC,
+        _______, S(KC_PGDN), S(KC_LEFT), S(KC_DOWN), S(KC_RGHT), S(KC_END),                          KC_PGDN, KC_LEFT, KC_DOWN, KC_RGHT, KC_END,  _______,
+        KW_XTRA, _______, KW_CUT, KW_COPY, KW_PASTE, _______, _______, _______,    QK_BOOT, _______, _______, _______, _______, _______, KW_UNDO, _______,
+                                   _______, DEL_4,   _______, _______, _______,    _______, _______,  _______, BSPC_4,  _______
+    ),
+
+    [_EXTRA] = LAYOUT(
         _______, KC_F1,   KC_F2,   KC_F3,   KC_F4,   _______,                                        KC_INS,  KC_PSCR, KC_SCRL, KC_PAUS, _______, _______,
-        _______, KC_F5,   KC_F6,   KC_F7 ,  KC_F8,   _______,                                        _______, _______, _______, _______, _______, _______,
-        _______, KC_F9,   KC_F10,  KC_F11,  KC_F12,  _______, KW_XTRA, _______,    _______, _______, _______, _______, _______, _______, _______, _______,
-                                   _______, _______, _______, KW_XTRA, _______,    _______, _______, _______, _______, _______
+        _______, KC_F5,   KC_F6,   KC_F7 ,  KC_F8,   _______,                                        _______, KC_MUTE, KC_VOLD, KC_VOLU, _______, _______,
+        _______, KC_F9,   KC_F10,  KC_F11,  KC_F12,  _______, _______, _______,    _______, _______, _______, KC_MPRV, KC_MPLY, KC_MNXT, _______, _______,
+                                   _______, _______, _______, _______, _______,    _______, _______, _______, _______, _______
     )
 };
+
+#if defined(ENCODER_MAP_ENABLE)
+const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
+    [_DVORAK] = { ENCODER_CCW_CW(KC_VOLD, KC_VOLU), ENCODER_CCW_CW(KW_WINB, KW_WINF) },
+    [_NAV] =    { ENCODER_CCW_CW(KC_VOLD, KC_VOLU), ENCODER_CCW_CW(KC_MS_WH_UP, KC_MS_WH_DOWN) },
+    [_NUM] =    { ENCODER_CCW_CW(KC_VOLD, KC_VOLU), ENCODER_CCW_CW(KC_MS_WH_UP, KC_MS_WH_DOWN) },
+    [_SYMBOL] = { ENCODER_CCW_CW(KC_VOLD, KC_VOLU), ENCODER_CCW_CW(KC_MS_WH_UP, KC_MS_WH_DOWN) },
+    [_EXTRA] =  { ENCODER_CCW_CW(KC_VOLD, KC_VOLU), ENCODER_CCW_CW(KC_MS_WH_UP, KC_MS_WH_DOWN) },
+};
+#endif
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
